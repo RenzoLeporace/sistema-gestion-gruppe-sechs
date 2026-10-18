@@ -1,0 +1,21 @@
+# Visual Studio and .NET build output
+.vs/
+**/bin/
+**/obj/
+**/verify-bin/
+**/verify-obj/
+*.user
+*.suo
+*.cache
+
+# Local SDK and test artifacts
+.dotnet/
+TestResults/
+*.log
+
+# Local application data and backups
+*.bak
+*.zip
+*.db
+*.sqlite
+*.sqlite3
