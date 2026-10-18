@@ -148,7 +148,7 @@ namespace BLL
             if (idx >= 0)
             {
                 todas[idx] = agregada;
-                XMLHelper.Guardar("Data\\facturas.xml", todas);
+                _facturaMpr.GuardarTodos(todas);
             }
 
             return agregada;

@@ -29,7 +29,7 @@ namespace BLL
             }
             if (huboCambios)
             {
-                XMLHelper.Guardar("Data\\facturas.xml", facturas);
+                _facturaMpr.GuardarTodos(facturas);
                 AppEvents.NotifyEconomiaActualizada();
             }
         }
@@ -63,16 +63,17 @@ namespace BLL
                 ?? throw new InvalidOperationException("Factura no encontrada.");
             if (factura.Estado_Pago || factura.Saldo_Pendiente <= 0)
                 throw new InvalidOperationException("La factura ya se encuentra pagada.");
+            if (Math.Round(monto, 2) > factura.Saldo_Pendiente)
+                throw new InvalidOperationException("El pago no puede superar el saldo pendiente.");
 
             _pagoMpr.Add(new PagoBE(0, factura.IdFactura, Math.Round(monto, 2), fechaPago, metodo.Trim()));
-            var aplicado = Math.Min(monto, factura.Saldo_Pendiente);
-            factura.Saldo_Pendiente = Math.Round(factura.Saldo_Pendiente - aplicado, 2);
+            factura.Saldo_Pendiente = Math.Round(factura.Saldo_Pendiente - monto, 2);
             if (factura.Saldo_Pendiente <= 0)
             {
                 factura.Saldo_Pendiente = 0;
                 factura.Estado_Pago = true;
             }
-            XMLHelper.Guardar("Data\\facturas.xml", facturas);
+            _facturaMpr.GuardarTodos(facturas);
             AppEvents.NotifyEconomiaActualizada();
 
             return factura;

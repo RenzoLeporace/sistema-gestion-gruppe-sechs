@@ -45,6 +45,16 @@
             checkBox1 = new CheckBox();
             checkBox2 = new CheckBox();
             checkBox3 = new CheckBox();
+            txtCorreoPers = new TextBox();
+            txtTelefonoPers = new TextBox();
+            txtTurnosPers = new TextBox();
+            txtCapacitacionesPers = new TextBox();
+            dtpVencimientoArmas = new DateTimePicker();
+            lblCorreoPers = new Label();
+            lblTelefonoPers = new Label();
+            lblTurnosPers = new Label();
+            lblCapacitacionesPers = new Label();
+            lblVencimientoArmas = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -57,7 +67,7 @@
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(489, 214);
+            dataGridView1.Size = new Size(741, 214);
             dataGridView1.TabIndex = 0;
             // 
             // txtBuscaPers
@@ -103,7 +113,7 @@
             // 
             // btnAgregarPers
             // 
-            btnAgregarPers.Location = new Point(652, 254);
+            btnAgregarPers.Location = new Point(797, 280);
             btnAgregarPers.Name = "btnAgregarPers";
             btnAgregarPers.Size = new Size(94, 29);
             btnAgregarPers.TabIndex = 8;
@@ -113,7 +123,7 @@
             // 
             // btnModificarPers
             // 
-            btnModificarPers.Location = new Point(652, 329);
+            btnModificarPers.Location = new Point(797, 330);
             btnModificarPers.Name = "btnModificarPers";
             btnModificarPers.Size = new Size(94, 29);
             btnModificarPers.TabIndex = 9;
@@ -203,12 +213,52 @@
             checkBox3.TabIndex = 18;
             checkBox3.Text = "Carnet Conducir";
             checkBox3.UseVisualStyleBackColor = true;
+            //
+            // Datos de contacto, turnos y formación
+            //
+            lblCorreoPers.AutoSize = true;
+            lblCorreoPers.Location = new Point(12, 422);
+            lblCorreoPers.Text = "Correo:";
+            txtCorreoPers.Location = new Point(135, 419);
+            txtCorreoPers.Size = new Size(230, 27);
+            lblTelefonoPers.AutoSize = true;
+            lblTelefonoPers.Location = new Point(12, 461);
+            lblTelefonoPers.Text = "Teléfono:";
+            txtTelefonoPers.Location = new Point(135, 458);
+            txtTelefonoPers.Size = new Size(230, 27);
+            lblTurnosPers.AutoSize = true;
+            lblTurnosPers.Location = new Point(12, 500);
+            lblTurnosPers.Text = "Turnos/horarios:";
+            txtTurnosPers.Location = new Point(135, 497);
+            txtTurnosPers.Size = new Size(230, 27);
+            lblVencimientoArmas.AutoSize = true;
+            lblVencimientoArmas.Location = new Point(395, 422);
+            lblVencimientoArmas.Text = "Vence licencia armas:";
+            dtpVencimientoArmas.Location = new Point(572, 419);
+            dtpVencimientoArmas.Size = new Size(240, 27);
+            dtpVencimientoArmas.Format = DateTimePickerFormat.Short;
+            dtpVencimientoArmas.ShowCheckBox = true;
+            lblCapacitacionesPers.AutoSize = true;
+            lblCapacitacionesPers.Location = new Point(395, 461);
+            lblCapacitacionesPers.Text = "Capacitaciones:";
+            txtCapacitacionesPers.Location = new Point(572, 458);
+            txtCapacitacionesPers.Size = new Size(362, 27);
             // 
             // GestionPersonal
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 392);
+            ClientSize = new Size(1055, 545);
+            Controls.Add(txtCorreoPers);
+            Controls.Add(txtTelefonoPers);
+            Controls.Add(txtTurnosPers);
+            Controls.Add(txtCapacitacionesPers);
+            Controls.Add(dtpVencimientoArmas);
+            Controls.Add(lblCorreoPers);
+            Controls.Add(lblTelefonoPers);
+            Controls.Add(lblTurnosPers);
+            Controls.Add(lblCapacitacionesPers);
+            Controls.Add(lblVencimientoArmas);
             Controls.Add(checkBox3);
             Controls.Add(checkBox2);
             Controls.Add(checkBox1);
@@ -253,5 +303,15 @@
         private CheckBox checkBox1;
         private CheckBox checkBox2;
         private CheckBox checkBox3;
+        private TextBox txtCorreoPers;
+        private TextBox txtTelefonoPers;
+        private TextBox txtTurnosPers;
+        private TextBox txtCapacitacionesPers;
+        private DateTimePicker dtpVencimientoArmas;
+        private Label lblCorreoPers;
+        private Label lblTelefonoPers;
+        private Label lblTurnosPers;
+        private Label lblCapacitacionesPers;
+        private Label lblVencimientoArmas;
     }
 }

@@ -35,5 +35,9 @@ namespace Mapper
         {
             return GetAll().Where(f => f.IdContrato == idContrato).ToList();
         }
+        public void GuardarTodos(List<FacturaBE> facturas)
+        {
+            XMLHelper.Guardar(_path, facturas);
+        }
     }
 }

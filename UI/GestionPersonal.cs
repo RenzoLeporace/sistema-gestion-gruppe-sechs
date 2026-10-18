@@ -94,7 +94,7 @@ namespace UI
                 var especialidad = (comboBox1.SelectedItem as TipoServicioBE)?.Descripcion;
                 var habs = ObtenerHabilitacionesSeleccionadas();
 
-                _bll.Agregar(nombre, dni, especialidad, habs, disponible: true);
+                _bll.Agregar(nombre, dni, especialidad, habs, disponible: true, datos: LeerDatosAdicionales());
                 RefrescarGrilla(_bll.Listar());
                 SeleccionarPorDni(dni);
                 MessageBox.Show("Personal agregado correctamente.", "Alta", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -118,7 +118,7 @@ namespace UI
                 var dni = txtDNIPers.Text?.Trim();
                 var especialidad = (comboBox1.SelectedItem as TipoServicioBE)?.Descripcion;
                 var habs = ObtenerHabilitacionesSeleccionadas();
-                _bll.Actualizar(seleccionado.IdPersonal, nombre, dni, especialidad, habs, disponible: seleccionado.Estado_Disponibilidad);
+                _bll.Actualizar(seleccionado.IdPersonal, nombre, dni, especialidad, habs, disponible: seleccionado.Estado_Disponibilidad, datos: LeerDatosAdicionales());
                 RefrescarGrilla(_bll.Listar());
                 SeleccionarPorId(seleccionado.IdPersonal);
                 MessageBox.Show("Datos actualizados correctamente.", "Modificar", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -180,6 +180,13 @@ namespace UI
             checkBox1.Checked = habs.Contains("PERMISO DE ARMAS");
             checkBox2.Checked = habs.Contains("PRIMEROS AUXILIOS");
             checkBox3.Checked = habs.Contains("CARNET DE CONDUCIR") || habs.Any(h => h.Contains("CARNET") || h.Contains("CONDUC"));
+            txtCorreoPers.Text = p.Correo ?? string.Empty;
+            txtTelefonoPers.Text = p.Telefono ?? string.Empty;
+            txtTurnosPers.Text = p.TurnosDisponibles ?? string.Empty;
+            txtCapacitacionesPers.Text = p.Capacitaciones ?? string.Empty;
+            dtpVencimientoArmas.Checked = p.VencimientoLicenciaArmas.HasValue;
+            if (p.VencimientoLicenciaArmas.HasValue)
+                dtpVencimientoArmas.Value = p.VencimientoLicenciaArmas.Value;
         }
         private void SeleccionarTipoServicioPorDescripcion(string desc)
         {
@@ -207,6 +214,22 @@ namespace UI
             checkBox1.Checked = false;
             checkBox2.Checked = false;
             checkBox3.Checked = false;
+            txtCorreoPers.Clear();
+            txtTelefonoPers.Clear();
+            txtTurnosPers.Clear();
+            txtCapacitacionesPers.Clear();
+            dtpVencimientoArmas.Checked = false;
+        }
+        private PersonalBLL.DatosAdicionalesPersonal LeerDatosAdicionales()
+        {
+            return new PersonalBLL.DatosAdicionalesPersonal
+            {
+                Correo = txtCorreoPers.Text,
+                Telefono = txtTelefonoPers.Text,
+                TurnosDisponibles = txtTurnosPers.Text,
+                Capacitaciones = txtCapacitacionesPers.Text,
+                VencimientoLicenciaArmas = dtpVencimientoArmas.Checked ? dtpVencimientoArmas.Value.Date : null
+            };
         }
         private List<string> ObtenerHabilitacionesSeleccionadas()
         {

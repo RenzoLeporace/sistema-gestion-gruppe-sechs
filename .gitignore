@@ -10,6 +10,7 @@
 
 # Local SDK and test artifacts
 .dotnet/
+.nuget/
 TestResults/
 *.log
 

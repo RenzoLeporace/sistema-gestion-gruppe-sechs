@@ -8,6 +8,14 @@ namespace BLL
 {
     public class PersonalBLL
     {
+        public sealed class DatosAdicionalesPersonal
+        {
+            public string Correo { get; set; } = string.Empty;
+            public string Telefono { get; set; } = string.Empty;
+            public string TurnosDisponibles { get; set; } = string.Empty;
+            public DateTime? VencimientoLicenciaArmas { get; set; }
+            public string Capacitaciones { get; set; } = string.Empty;
+        }
         private readonly PersonalMpr _mpr = new PersonalMpr();
 
         private static readonly HashSet<string> EspecialidadesValidas = new(StringComparer.OrdinalIgnoreCase)
@@ -39,9 +47,10 @@ namespace BLL
         {
             return _mpr.GetAll().FirstOrDefault(p => p.IdPersonal == idPersonal);
         }
-        public PersonalBE Agregar(string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible = true)
+        public PersonalBE Agregar(string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible = true, DatosAdicionalesPersonal datos = null)
         {
             ValidarDatos(nombre, dni, especialidad);
+            ValidarDatosAdicionales(datos, habilitaciones);
 
             if (BuscarPorDniExacto(dni) != null)
                 throw new InvalidOperationException("El DNI ya existe, no se puede duplicar.");
@@ -56,12 +65,14 @@ namespace BLL
                 Habilitaciones = habStr,
                 Estado_Disponibilidad = disponible
             };
+            AplicarDatosAdicionales(nuevo, datos);
 
             return _mpr.Add(nuevo);
         }
-        public void Actualizar(int idPersonal, string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible)
+        public void Actualizar(int idPersonal, string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible, DatosAdicionalesPersonal datos = null)
         {
             ValidarDatos(nombre, dni, especialidad);
+            ValidarDatosAdicionales(datos, habilitaciones);
 
             var todos = _mpr.GetAll();
             var existente = todos.FirstOrDefault(p => p.IdPersonal == idPersonal)
@@ -76,6 +87,7 @@ namespace BLL
             existente.Especialidad = especialidad.Trim().ToUpperInvariant();
             existente.Habilitaciones = string.Join("|", (habilitaciones ?? Array.Empty<string>()).Where(h => !string.IsNullOrWhiteSpace(h)).Distinct(StringComparer.OrdinalIgnoreCase));
             existente.Estado_Disponibilidad = disponible;
+            AplicarDatosAdicionales(existente, datos);
 
             _mpr.Update(existente);
         }
@@ -98,6 +110,25 @@ namespace BLL
                 throw new ArgumentException("El DNI debe ser numérico.");
             if (string.IsNullOrWhiteSpace(especialidad) || !EspecialidadesValidas.Contains(especialidad.Trim().ToUpperInvariant()))
                 throw new ArgumentException("Especialidad inválida. Debe ser: ESCOLTA, EVENTO o TRANSPORTE.");
+        }
+        private static void ValidarDatosAdicionales(DatosAdicionalesPersonal datos, IEnumerable<string> habilitaciones)
+        {
+            if (datos == null) return;
+            if (!string.IsNullOrWhiteSpace(datos.Correo) &&
+                !System.Net.Mail.MailAddress.TryCreate(datos.Correo.Trim(), out _))
+                throw new ArgumentException("El correo electrónico no es válido.");
+            if (datos.VencimientoLicenciaArmas.HasValue &&
+                !(habilitaciones ?? Array.Empty<string>()).Any(h => string.Equals(h, "Permiso de Armas", StringComparison.OrdinalIgnoreCase)))
+                throw new ArgumentException("La fecha de vencimiento requiere permiso de armas.");
+        }
+        private static void AplicarDatosAdicionales(PersonalBE personal, DatosAdicionalesPersonal datos)
+        {
+            if (datos == null) return;
+            personal.Correo = datos.Correo?.Trim() ?? string.Empty;
+            personal.Telefono = datos.Telefono?.Trim() ?? string.Empty;
+            personal.TurnosDisponibles = datos.TurnosDisponibles?.Trim() ?? string.Empty;
+            personal.VencimientoLicenciaArmas = datos.VencimientoLicenciaArmas;
+            personal.Capacitaciones = datos.Capacitaciones?.Trim() ?? string.Empty;
         }
     }
 }

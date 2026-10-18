@@ -14,6 +14,11 @@ namespace BE
         public string DNI { get; set; }
         public bool Estado_Disponibilidad { get; set; }
         public string Habilitaciones { get; set; }
+        public string Correo { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
+        public string TurnosDisponibles { get; set; } = string.Empty;
+        public DateTime? VencimientoLicenciaArmas { get; set; }
+        public string Capacitaciones { get; set; } = string.Empty;
 
         public PersonalBE() { }
 

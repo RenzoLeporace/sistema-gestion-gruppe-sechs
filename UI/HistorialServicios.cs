@@ -14,6 +14,7 @@ namespace UI
         private readonly AsignacionPersonalMpr _asigPersMpr = new AsignacionPersonalMpr();
         private readonly AsignacionVehiucloMpr _asigVehMpr = new AsignacionVehiucloMpr();
         private readonly InformeOperativoMpr _informeMpr = new InformeOperativoMpr();
+        private readonly FacturaMpr _facturaMpr = new FacturaMpr();
 
         public HistorialServicios()
         {
@@ -86,6 +87,9 @@ namespace UI
 
             var informesDict = _informeMpr.GetAll()
                 .ToDictionary(i => i.IdInforme, i => i);
+            var facturasPorContrato = _facturaMpr.GetAll()
+                .GroupBy(f => f.IdContrato)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
             var vista = servicios.Select(s =>
             {
@@ -99,6 +103,7 @@ namespace UI
                     "En ejecución";
 
                 informesDict.TryGetValue(s.IdInformeOperativo.GetValueOrDefault(), out var informe);
+                facturasPorContrato.TryGetValue(s.IdContrato, out var facturas);
 
                 return new
                 {
@@ -111,6 +116,9 @@ namespace UI
                     Personal = $"{persAsign}/{s.PersonalNecesario}",
                     Vehiculos = $"{vehAsign}/{s.VehiculosNecesarios}",
                     CostoEstimadoContrato = contrato.Costo_Estimado,
+                    FacturasContrato = facturas == null ? "Sin factura" : string.Join(", ", facturas.Select(f => $"#{f.IdFactura}")),
+                    TotalFacturadoContrato = facturas?.Sum(f => f.Total) ?? 0,
+                    SaldoPendienteContrato = facturas?.Sum(f => f.Saldo_Pendiente) ?? 0,
                     TieneInforme = informe != null ? "Sí" : "No",
                     IdInforme = informe?.IdInforme,
                     Incidencias = informe?.Incidencias,
