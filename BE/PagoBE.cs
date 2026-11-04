@@ -8,7 +8,7 @@ namespace BE
         public int IdFactura { get; set; }
         public double Monto_Pagado { get; set; }
         public DateTime Fecha_Pago { get; set; }
-        public string Metodo_Pago { get; set; }
+        public string Metodo_Pago { get; set; } = string.Empty;
 
         public PagoBE() { }
 

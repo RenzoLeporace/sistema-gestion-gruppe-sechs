@@ -73,14 +73,14 @@ namespace BLL
         {
             var prop = servicio.GetType().GetProperty("Fecha_hora_inicio");
             if (prop != null && prop.PropertyType == typeof(DateTime))
-                return (DateTime)prop.GetValue(servicio);
+                return prop.GetValue(servicio) is DateTime inicio ? inicio : DateTime.MinValue;
             return DateTime.MinValue;
         }
         private DateTime GetFinServicio(object servicio)
         {
             var prop = servicio.GetType().GetProperty("Fecha_hora_fin");
             if (prop != null && prop.PropertyType == typeof(DateTime))
-                return (DateTime)prop.GetValue(servicio);
+                return prop.GetValue(servicio) is DateTime fin ? fin : DateTime.MaxValue;
             return DateTime.MaxValue;
         }
     }

@@ -4,14 +4,14 @@ namespace BE
 {
     public class ServicioBE
     {
-        public string Estado { get; set; }
+        public string Estado { get; set; } = string.Empty;
         public int IdServicio { get; set; }
-        public string ValorServicio { get; set; }
+        public string ValorServicio { get; set; } = string.Empty;
         public DateTime Fecha_hora_inicio { get; set; }
         public DateTime Fecha_hora_fin { get; set; }
 
         public int IdContrato { get; set; }
-        public string TipoServicio { get; set; }
+        public string TipoServicio { get; set; } = string.Empty;
         public int PersonalNecesario { get; set; }
         public int VehiculosNecesarios { get; set; }
         public int? IdInformeOperativo { get; set; }

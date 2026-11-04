@@ -10,7 +10,7 @@ namespace UI
     public partial class ActualizarContrato : Form
     {
         private readonly ContratoBLL _contratoBll;
-        private ContratoBE _contratoSeleccionado;
+        private ContratoBE? _contratoSeleccionado;
 
         public ActualizarContrato()
         {

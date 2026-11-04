@@ -11,7 +11,7 @@ namespace UI
         private readonly AsignacionVehiculoBLL _asigVehBll = new AsignacionVehiculoBLL();
         private readonly VehiculoBLL _vehiculoBll = new VehiculoBLL();
         private bool _suppressDialogs = false;
-        private string _pendingInitialMessage = null;
+        private string? _pendingInitialMessage = null;
 
         public AsignarVehiculos()
         {

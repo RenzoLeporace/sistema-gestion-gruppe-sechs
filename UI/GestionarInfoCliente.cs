@@ -10,7 +10,7 @@ namespace UI
     public partial class GestionarInfoCliente : Form
     {
         private readonly ClienteBLL _clienteBll;
-        private ClienteBE _clienteActual;
+        private ClienteBE? _clienteActual;
         public GestionarInfoCliente()
         {
             InitializeComponent();
@@ -93,7 +93,7 @@ namespace UI
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _clienteActual = _clienteBll.BuscarPorDni(txtDNICUITCliente.Text);
                 CargarGrid();
-                MapearAFormulario(_clienteActual);
+                if (_clienteActual != null) MapearAFormulario(_clienteActual);
             }
             catch (Exception ex)
             {

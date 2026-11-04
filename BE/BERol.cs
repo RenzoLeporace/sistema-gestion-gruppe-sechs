@@ -8,7 +8,7 @@ namespace BE
 {
     public class BERol : BEComponente
     {
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         public List<BEPermisoSimple> Permisos { get; set; } = new();
 

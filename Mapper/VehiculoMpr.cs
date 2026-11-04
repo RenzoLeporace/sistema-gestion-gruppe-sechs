@@ -23,11 +23,11 @@ namespace Mapper
             return XMLHelper.Leer<VehiculoBE>(_path);
         }
 
-        public VehiculoBE GetById(int id)
+        public VehiculoBE? GetById(int id)
         {
             return GetAll().FirstOrDefault(v => v.IdVehiculo == id);
         }
-        public VehiculoBE GetByPatente(string patente)
+        public VehiculoBE? GetByPatente(string patente)
         {
             var p = (patente ?? string.Empty).Trim();
             return GetAll().FirstOrDefault(v =>

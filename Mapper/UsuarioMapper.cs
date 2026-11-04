@@ -14,8 +14,8 @@ namespace Mapper
         public class UsuarioDto
         {
             public int Id { get; set; }
-            public string Nombre { get; set; }
-            public string PasswordEncrypted { get; set; }
+            public string? Nombre { get; set; }
+            public string PasswordEncrypted { get; set; } = string.Empty;
             public List<int> RolesIds { get; set; } = new();
             public bool Bloqueado { get; set; }
             public bool Activo { get; set; } = true;
@@ -92,7 +92,7 @@ namespace Mapper
             lista.RemoveAll(u => u.Id == id);
             XMLHelper.Guardar(_path, lista);
         }
-        public BEUsuario ObtenerPorId(int id)
+        public BEUsuario? ObtenerPorId(int id)
         {
             var dtos = XMLHelper.Leer<UsuarioDto>(_path) ?? new List<UsuarioDto>();
             var dto = dtos.FirstOrDefault(d => d.Id == id);

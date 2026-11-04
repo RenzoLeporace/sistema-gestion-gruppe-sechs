@@ -47,7 +47,7 @@ namespace BLL
                 fecha_hora_inicio: inicio,
                 fecha_hora_fin: fin,
                 idContrato: idContrato,
-                tipoServicio: ts.Descripcion,
+                tipoServicio: ts.Descripcion ?? string.Empty,
                 personalNecesario: personalNecesario,
                 vehiculosNecesarios: vehiculosNecesariosFinal
             );

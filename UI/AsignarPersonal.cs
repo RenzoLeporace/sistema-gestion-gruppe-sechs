@@ -12,7 +12,7 @@ namespace UI
         private readonly AsignacionPersonalBLL _asigBll = new AsignacionPersonalBLL();
         private readonly ServicioBLL _servicioBll = new ServicioBLL();
         private bool _suppressDialogs = false;
-        private string _pendingInitialMessage = null;
+        private string? _pendingInitialMessage = null;
 
         public AsignarPersonal()
         {
@@ -79,7 +79,7 @@ namespace UI
             }
         }
 
-        private void DataGridView1_SelectionChanged(object sender, EventArgs e)
+        private void DataGridView1_SelectionChanged(object? sender, EventArgs e)
         {
             OnServicioSeleccionChanged();
         }
@@ -188,7 +188,8 @@ namespace UI
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                dynamic item = row.DataBoundItem;
+                if (row.DataBoundItem is not { } bound) continue;
+                dynamic item = bound;
                 if (item.IdServicio == idServicio)
                 {
                     row.Selected = true;

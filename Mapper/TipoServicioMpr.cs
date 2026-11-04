@@ -41,7 +41,7 @@ namespace Mapper
         {
             XMLHelper.Guardar(_path, lista);
         }
-        public TipoServicioBE GetByDescripcion(string descripcion)
+        public TipoServicioBE? GetByDescripcion(string descripcion)
         {
             return GetAll().FirstOrDefault(t => t.Descripcion.Equals(descripcion, StringComparison.OrdinalIgnoreCase));
         }

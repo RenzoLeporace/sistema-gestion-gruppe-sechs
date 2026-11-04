@@ -57,7 +57,7 @@ namespace BLL
         public IEnumerable<BERol> GetRoles() => _rolMpr.ObtenerTodos() ?? new List<BERol>();
         public IEnumerable<BEPermisoSimple> GetPermisos() => _permMpr.ObtenerTodos() ?? new List<BEPermisoSimple>();
 
-        public bool UsuarioTienePermiso(BEUsuario usuario, BETipoPermiso permiso)
+        public bool UsuarioTienePermiso(BEUsuario? usuario, BETipoPermiso permiso)
         {
             if (usuario == null) return false;
             var directos = (usuario.Permisos ?? new List<BEComponente>())
@@ -70,7 +70,7 @@ namespace BLL
 
             return porRol;
         }
-        public bool UsuarioTienePermiso(BEUsuario usuario, string permisoCodigo)
+        public bool UsuarioTienePermiso(BEUsuario? usuario, string permisoCodigo)
         {
             if (usuario == null) return false;
             if (string.IsNullOrWhiteSpace(permisoCodigo)) return false;

@@ -20,7 +20,7 @@ namespace Mapper
         {
             return XMLHelper.Leer<ClienteBE>(_path);
         }
-        public ClienteBE GetByDni(string dniCuil)
+        public ClienteBE? GetByDni(string dniCuil)
         {
             if (string.IsNullOrWhiteSpace(dniCuil)) return null;
             return GetAll().FirstOrDefault(c => c.DNI_CUIL.Equals(dniCuil.Trim(), StringComparison.OrdinalIgnoreCase));

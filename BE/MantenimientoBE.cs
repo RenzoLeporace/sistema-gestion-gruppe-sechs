@@ -10,8 +10,8 @@ namespace BE
         public double Costo { get; set; }
         public DateTime Fecha { get; set; }
         public int IdMantenimiento { get; set; }
-        public string Estado { get; set; }
-        public string Descripcion { get; set; }
+        public string Estado { get; set; } = string.Empty;
+        public string Descripcion { get; set; } = string.Empty;
 
         public int IdVehiculo { get; set; }
 

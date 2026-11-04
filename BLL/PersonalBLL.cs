@@ -38,16 +38,16 @@ namespace BLL
                 .OrderBy(p => p.Nombre)
                 .ToList();
         }
-        public PersonalBE BuscarPorDniExacto(string dni)
+        public PersonalBE? BuscarPorDniExacto(string dni)
         {
             dni = (dni ?? string.Empty).Trim();
             return _mpr.GetAll().FirstOrDefault(p => string.Equals(p.DNI, dni, StringComparison.OrdinalIgnoreCase));
         }
-        public PersonalBE BuscarPorId(int idPersonal)
+        public PersonalBE? BuscarPorId(int idPersonal)
         {
             return _mpr.GetAll().FirstOrDefault(p => p.IdPersonal == idPersonal);
         }
-        public PersonalBE Agregar(string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible = true, DatosAdicionalesPersonal datos = null)
+        public PersonalBE Agregar(string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible = true, DatosAdicionalesPersonal? datos = null)
         {
             ValidarDatos(nombre, dni, especialidad);
             ValidarDatosAdicionales(datos, habilitaciones);
@@ -69,7 +69,7 @@ namespace BLL
 
             return _mpr.Add(nuevo);
         }
-        public void Actualizar(int idPersonal, string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible, DatosAdicionalesPersonal datos = null)
+        public void Actualizar(int idPersonal, string nombre, string dni, string especialidad, IEnumerable<string> habilitaciones, bool disponible, DatosAdicionalesPersonal? datos = null)
         {
             ValidarDatos(nombre, dni, especialidad);
             ValidarDatosAdicionales(datos, habilitaciones);
@@ -111,7 +111,7 @@ namespace BLL
             if (string.IsNullOrWhiteSpace(especialidad) || !EspecialidadesValidas.Contains(especialidad.Trim().ToUpperInvariant()))
                 throw new ArgumentException("Especialidad inválida. Debe ser: ESCOLTA, EVENTO o TRANSPORTE.");
         }
-        private static void ValidarDatosAdicionales(DatosAdicionalesPersonal datos, IEnumerable<string> habilitaciones)
+        private static void ValidarDatosAdicionales(DatosAdicionalesPersonal? datos, IEnumerable<string> habilitaciones)
         {
             if (datos == null) return;
             if (!string.IsNullOrWhiteSpace(datos.Correo) &&
@@ -121,7 +121,7 @@ namespace BLL
                 !(habilitaciones ?? Array.Empty<string>()).Any(h => string.Equals(h, "Permiso de Armas", StringComparison.OrdinalIgnoreCase)))
                 throw new ArgumentException("La fecha de vencimiento requiere permiso de armas.");
         }
-        private static void AplicarDatosAdicionales(PersonalBE personal, DatosAdicionalesPersonal datos)
+        private static void AplicarDatosAdicionales(PersonalBE personal, DatosAdicionalesPersonal? datos)
         {
             if (datos == null) return;
             personal.Correo = datos.Correo?.Trim() ?? string.Empty;

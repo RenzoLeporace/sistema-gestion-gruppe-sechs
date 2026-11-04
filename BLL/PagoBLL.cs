@@ -44,7 +44,7 @@ namespace BLL
                 .ToList();
         }
 
-        public FacturaBE ObtenerPorId(int id)
+        public FacturaBE? ObtenerPorId(int id)
         {
             return _facturaMpr.GetAll().FirstOrDefault(f => f.IdFactura == id);
         }

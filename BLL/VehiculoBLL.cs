@@ -14,7 +14,7 @@ namespace BLL
         public const int EstadoDisponible = 1;
         public const int EstadoAsignado = 2;
         public List<VehiculoBE> Listar() => _mpr.GetAll();
-        public VehiculoBE BuscarPorId(int id) => _mpr.GetById(id);
+        public VehiculoBE? BuscarPorId(int id) => _mpr.GetById(id);
         public List<VehiculoBE> Buscar(string criterio)
         {
             var q = (criterio ?? string.Empty).Trim();

@@ -9,11 +9,11 @@ namespace BE
     public class PersonalBE
     {
         public int IdPersonal { get; set; }
-        public string Especialidad { get; set; }
-        public string Nombre { get; set; }
-        public string DNI { get; set; }
+        public string Especialidad { get; set; } = string.Empty;
+        public string Nombre { get; set; } = string.Empty;
+        public string DNI { get; set; } = string.Empty;
         public bool Estado_Disponibilidad { get; set; }
-        public string Habilitaciones { get; set; }
+        public string Habilitaciones { get; set; } = string.Empty;
         public string Correo { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;
         public string TurnosDisponibles { get; set; } = string.Empty;

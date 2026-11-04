@@ -13,7 +13,7 @@ namespace BLL
         {
             return _mapper.GetAll();
         }
-        public ClienteBE BuscarPorDni(string dniCuil)
+        public ClienteBE? BuscarPorDni(string dniCuil)
         {
             return _mapper.GetByDni(dniCuil);
         }

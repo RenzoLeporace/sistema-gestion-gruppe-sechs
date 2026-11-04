@@ -10,13 +10,13 @@ namespace BE
     {
         public int IdContrato { get; set; }
         public int IdCliente { get; set; }
-        public string DNI_CUIL_Cliente { get; set; }
+        public string DNI_CUIL_Cliente { get; set; } = string.Empty;
         public double Costo_Estimado { get; set; }
         public DateTime Fecha_Inicio { get; set; }
         public DateTime Fecha_Fin { get; set; }
-        public string Estado { get; set; }
-        public string Tipo_Servicio { get; set; }
-        public string Recursos_Estimados { get; set; }
+        public string Estado { get; set; } = string.Empty;
+        public string Tipo_Servicio { get; set; } = string.Empty;
+        public string Recursos_Estimados { get; set; } = string.Empty;
 
         public ContratoBE() { }
 

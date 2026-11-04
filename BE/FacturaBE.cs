@@ -6,8 +6,8 @@ namespace BE
     {
         public int IdFactura { get; set; }
         public int IdContrato { get; set; }
-        public string DNI_CUIL_Cliente { get; set; }
-        public string NombreCliente { get; set; }
+        public string DNI_CUIL_Cliente { get; set; } = string.Empty;
+        public string NombreCliente { get; set; } = string.Empty;
 
         public DateTime FechaEmision { get; set; }
         public DateTime FechaVencimiento { get; set; }
@@ -18,7 +18,7 @@ namespace BE
 
         public bool Estado_Pago { get; set; }
         public double Saldo_Pendiente { get; set; }
-        public string RutaDocumento { get; set; }
+        public string RutaDocumento { get; set; } = string.Empty;
 
         public bool RecargoAplicado { get; set; }
         public double RecargoVencimiento { get; set; }

@@ -6,9 +6,9 @@ namespace BE
     {
         public int IdInforme { get; set; }
         public int IdServicio { get; set; }
-        public string Incidencias { get; set; }
-        public string Observaciones { get; set; }
-        public string Resultado { get; set; }
+        public string Incidencias { get; set; } = string.Empty;
+        public string Observaciones { get; set; } = string.Empty;
+        public string Resultado { get; set; } = string.Empty;
         public DateTime FechaCreacion { get; set; }
 
         public InformeOperativoBE() { }

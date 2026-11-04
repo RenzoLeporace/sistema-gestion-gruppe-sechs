@@ -5,8 +5,8 @@ namespace BE
     public class ReporteClienteBE : ReporteBE
     {
         public int IdCliente { get; set; }
-        public string NombreCliente { get; set; }
-        public string DNI_CUIL { get; set; }
+        public string NombreCliente { get; set; } = string.Empty;
+        public string DNI_CUIL { get; set; } = string.Empty;
 
         public int ServiciosContratados { get; set; }
         public double FacturacionAcumulada { get; set; }

@@ -31,8 +31,8 @@ namespace BLL
         public class PrevisualizacionFactura
         {
             public int IdContrato { get; set; }
-            public string Cliente { get; set; }
-            public string DNI { get; set; }
+            public string Cliente { get; set; } = string.Empty;
+            public string DNI { get; set; } = string.Empty;
             public int ServiciosFacturables { get; set; }
             public double Subtotal { get; set; }
             public double Impuestos { get; set; }
@@ -123,8 +123,10 @@ namespace BLL
         public FacturaBE GenerarFactura(int idContrato)
         {
             var prev = Previsualizar(idContrato);
-            var contrato = _contratoBll.BuscarPorId(idContrato);
-            var cliente = _clienteBll.BuscarPorDni(contrato.DNI_CUIL_Cliente);
+            var contrato = _contratoBll.BuscarPorId(idContrato)
+                ?? throw new InvalidOperationException("Contrato no encontrado.");
+            var cliente = _clienteBll.BuscarPorDni(contrato.DNI_CUIL_Cliente)
+                ?? throw new InvalidOperationException("Cliente no encontrado.");
 
             var factura = new FacturaBE(
                 idFactura: 0,

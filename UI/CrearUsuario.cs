@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Forms;
 using BLL;
@@ -10,7 +11,6 @@ namespace UI
     {
         private TextBox txtNombre;
         private TextBox txtPassword;
-        private CheckedListBox clbRoles;
         private Button btnGuardar;
         private Button btnCancelar;
         public CrearUsuario()
@@ -22,6 +22,7 @@ namespace UI
             InitializeComponents();
             Load += CrearUsuario_Load;
         }
+        [MemberNotNull(nameof(txtNombre), nameof(txtPassword), nameof(btnGuardar), nameof(btnCancelar))]
         private void InitializeComponents()
         {
             var lblNombre = new Label { Text = "Usuario:", Left = 16, Top = 20, AutoSize = true };

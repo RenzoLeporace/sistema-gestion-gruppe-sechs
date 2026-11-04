@@ -31,7 +31,7 @@ namespace Mapper
             XMLHelper.Guardar(_path, lista);
             return nuevo;
         }
-        public ServicioBE GetById(int id)
+        public ServicioBE? GetById(int id)
         {
             return GetAll().FirstOrDefault(s => s.IdServicio == id);
         }

@@ -30,6 +30,6 @@ namespace BE
         {
         }
 
-        public override string ToString() => Nombre ?? base.ToString();
+        public override string ToString() => Nombre ?? base.ToString() ?? string.Empty;
     }
 }

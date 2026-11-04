@@ -11,9 +11,9 @@ namespace UI
     {
         private readonly InformeOperativoBLL _informeBll = new InformeOperativoBLL();
         private List<ServicioBE> _fuente = new();
-        private ServicioBE _seleccionado;
+        private ServicioBE? _seleccionado;
         private bool _suppressDialogs = false;
-        private string _pendingInitialMessage = null;
+        private string? _pendingInitialMessage = null;
 
         public GenerarInformeOperativo()
         {

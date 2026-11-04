@@ -29,7 +29,7 @@ namespace BLL
                     Bloqueado = false
                 };
                 var adminRol = BLLManagerSeguridad.Instance.GetRoles()
-                    .FirstOrDefault(r => r.Nombre.Equals("Admin", StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(r => string.Equals(r.Nombre, "Admin", StringComparison.OrdinalIgnoreCase));
 
                 if (adminRol != null)
                 {
@@ -78,7 +78,7 @@ namespace BLL
         }
         public bool ValidarCredenciales(string nombre, string password)
         {
-            nombre = nombre?.Trim();
+            nombre = nombre?.Trim() ?? string.Empty;
             password ??= string.Empty;
             var usuario = ObtenerPorNombre(nombre);
             if (usuario == null) return false;
@@ -158,7 +158,7 @@ namespace BLL
             var usuarios = _mapper.ObtenerTodos() ?? new List<BEUsuario>();
             var u = usuarios.FirstOrDefault(x => x.Id == usuario.Id);
             if (u == null) return;
-            var existentes = u.Permisos?.OfType<BEPermisoSimple>().ToList() ?? new List<BEPermisoSimple>();
+            var existentes = u.Permisos.OfType<BEPermisoSimple>().ToList();
             var nuevos = (permisos ?? Enumerable.Empty<BEPermisoSimple>()).ToList();
             var existentesIds = new HashSet<int>(existentes.Where(p => p.Id != 0).Select(p => p.Id));
             var duplicadosDirectos = nuevos.Where(p =>

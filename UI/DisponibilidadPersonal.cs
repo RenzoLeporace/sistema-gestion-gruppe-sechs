@@ -29,7 +29,7 @@ namespace UI
         private void CargarFiltros()
         {
             var especialidades = _tipoBll.Listar()
-                .Select(t => t.Descripcion?.Trim())
+                .Select(t => (t.Descripcion ?? string.Empty).Trim())
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(s => s)
@@ -71,13 +71,13 @@ namespace UI
                         .FirstOrDefault();
                     var ocupado = asignAct != null;
                     var estado = ocupado ? "Asignado" : "Disponible";
-                    var disponibleDesde = ocupado ? asignAct.Fin : momento;
+                    var disponibleDesde = asignAct != null ? asignAct.Fin : momento;
 
                     var proxima = asignaciones
                         .Where(a => a.IdPersonal == p.IdPersonal && a.Inicio > momento)
                         .OrderBy(a => a.Inicio)
                         .FirstOrDefault();
-                    var turno = ocupado ? TurnoDesde(asignAct.Inicio) : "Sin turno";
+                    var turno = asignAct != null ? TurnoDesde(asignAct.Inicio) : "Sin turno";
                     return new
                     {
                         p.IdPersonal,

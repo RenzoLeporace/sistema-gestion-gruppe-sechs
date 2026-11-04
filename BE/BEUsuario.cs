@@ -9,8 +9,8 @@ namespace BE
     public class BEUsuario
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string PasswordEncrypted { get; set; }
+        public string? Nombre { get; set; }
+        public string PasswordEncrypted { get; set; } = string.Empty;
         public bool Bloqueado { get; set; }
         public bool Activo { get; set; } = true;
         public bool DescifrarClave { get; set; }
@@ -38,7 +38,7 @@ namespace BE
         }
         public override string ToString()
         {
-            return Nombre;
+            return Nombre ?? string.Empty;
         }
     }
 }

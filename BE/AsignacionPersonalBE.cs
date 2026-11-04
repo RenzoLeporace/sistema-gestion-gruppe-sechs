@@ -12,8 +12,8 @@ namespace BE
         public int IdPersonal { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime Fin { get; set; }
-        public string EspecialidadAsignacion { get; set; }
-        public string Criterio { get; set; }
+        public string EspecialidadAsignacion { get; set; } = string.Empty;
+        public string Criterio { get; set; } = string.Empty;
 
         public AsignacionPersonalBE() { }
 
@@ -31,6 +31,7 @@ namespace BE
             Inicio = inicio;
             Fin = fin;
             EspecialidadAsignacion = especialidadAsignacion;
+            Criterio = criterio;
             Fecha = DateTime.Now;
         }
     }

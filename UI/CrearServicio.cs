@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
 using BLL;
@@ -12,10 +13,10 @@ namespace UI
         private readonly ContratoBLL _contratoBll = new ContratoBLL();
         private readonly ClienteBLL _clienteBll = new ClienteBLL();
 
-        private ContratoBE _contratoActual;
+        private ContratoBE? _contratoActual;
         private DateTime _inicioServicio;
         private DateTime _finServicio;
-        private Label _lblClienteInfo;
+        private Label? _lblClienteInfo;
 
         public CrearServicio()
         {
@@ -87,6 +88,7 @@ namespace UI
             }
         }
 
+        [MemberNotNull(nameof(_lblClienteInfo))]
         private void EnsureClienteLabel()
         {
             if (_lblClienteInfo != null) return;

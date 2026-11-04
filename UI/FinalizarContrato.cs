@@ -12,7 +12,7 @@ namespace UI
     {
         private readonly ContratoBLL _contratoBll;
         private readonly ServicioMpr _servicioMpr;
-        private ContratoBE _seleccionado;
+        private ContratoBE? _seleccionado;
 
         public FinalizarContrato()
         {

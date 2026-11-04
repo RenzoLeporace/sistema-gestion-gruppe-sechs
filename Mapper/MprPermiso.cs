@@ -47,7 +47,7 @@ namespace Mapper
             lista.RemoveAll(p => p.Id == id);
             GuardarTodos(lista);
         }
-        public BEPermisoSimple ObtenerPorId(int id)
+        public BEPermisoSimple? ObtenerPorId(int id)
         {
             return ObtenerTodos().FirstOrDefault(p => p.Id == id);
         }

@@ -96,7 +96,7 @@ namespace UI
             catch { return null; }
         }
 
-        private void DataGridView1_SelectionChanged(object sender, EventArgs e)
+        private void DataGridView1_SelectionChanged(object? sender, EventArgs e)
         {
             var id = FacturaSeleccionadaId();
             if (id == null)

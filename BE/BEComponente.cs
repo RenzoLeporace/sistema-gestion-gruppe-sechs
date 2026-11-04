@@ -6,7 +6,7 @@ namespace BE
     public abstract class BEComponente
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
+        public string? Nombre { get; set; }
 
         public abstract IList<BEComponente> Hijos { get; }
 

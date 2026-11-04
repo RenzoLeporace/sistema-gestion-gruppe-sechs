@@ -83,7 +83,7 @@ namespace UI
         {
             if (cboxTipoServiciocontrato.SelectedItem != null)
             {
-                var tarifa = _tipoServicioBll.ObtenerTarifaBase(cboxTipoServiciocontrato.SelectedItem.ToString());
+                var tarifa = _tipoServicioBll.ObtenerTarifaBase(cboxTipoServiciocontrato.SelectedItem.ToString() ?? string.Empty);
                 if (tarifa > 0 && string.IsNullOrWhiteSpace(txtCostoEstimado.Text))
                     txtCostoEstimado.PlaceholderText = tarifa.ToString("F2");
                 if (string.IsNullOrWhiteSpace(txtCostoEstimado.Text))
@@ -126,7 +126,7 @@ namespace UI
                     return;
                 }
 
-                var nuevo = _contratoBll.CrearContrato(dni, tipoServicio, fechaInicio, fechaFin, (double)costoConIva, recursos);
+                var nuevo = _contratoBll.CrearContrato(dni, tipoServicio ?? string.Empty, fechaInicio, fechaFin, (double)costoConIva, recursos);
                 MessageBox.Show($"Contrato creado correctamente. ID: {nuevo.IdContrato}\nCosto con IVA: {costoConIva.ToString("C", CultureInfo.GetCultureInfo("es-AR"))}",
                     "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LimpiarFormulario();

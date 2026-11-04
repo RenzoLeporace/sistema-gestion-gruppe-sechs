@@ -11,7 +11,7 @@ namespace UI
     {
         private readonly VehiculoBLL _vehiculoBll = new VehiculoBLL();
         private readonly MantenimientoBLL _mantBll = new MantenimientoBLL();
-        private VehiculoBE _seleccionado;
+        private VehiculoBE? _seleccionado;
 
         private double _precioMantenimiento = 50000;
 
@@ -77,7 +77,7 @@ namespace UI
                 return;
             }
 
-            object rawId = null;
+            object? rawId = null;
             if (dataGridView1.CurrentRow.Cells["IdVehiculo"] != null)
                 rawId = dataGridView1.CurrentRow.Cells["IdVehiculo"].Value;
             else

@@ -13,7 +13,7 @@ namespace BLL
         private static readonly Lazy<BLLBackup> _inst = new(() => new BLLBackup());
         public static BLLBackup Instance => _inst.Value;
         private BLLBackup() { }
-        public event Action DatosRestaurados;
+        public event Action? DatosRestaurados;
         public string DataDirectory => AppDomain.CurrentDomain.BaseDirectory;
         public string BackupDirectory
         {
@@ -111,7 +111,7 @@ namespace BLL
                 {
                     var pathAttr = f.Attribute("Path");
                     var nameAttr = f.Attribute("Name");
-                    string relativePath = pathAttr?.Value;
+                    string? relativePath = pathAttr?.Value;
                     if (string.IsNullOrWhiteSpace(relativePath))
                         relativePath = nameAttr?.Value ?? throw new InvalidOperationException("Entrada de archivo inválida.");
                     var destFile = Path.Combine(DataDirectory, relativePath);

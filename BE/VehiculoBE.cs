@@ -5,11 +5,11 @@ namespace BE
     public class VehiculoBE
     {
         public int IdVehiculo { get; set; }
-        public string Patente { get; set; }
-        public string Modelo { get; set; }
+        public string Patente { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
         public int EstadoOperativo { get; set; }
         public int Anio { get; set; }
-        public string Nivel_Blindaje { get; set; }
+        public string Nivel_Blindaje { get; set; } = string.Empty;
 
         public VehiculoBE() { }
 

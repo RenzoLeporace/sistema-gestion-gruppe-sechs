@@ -12,7 +12,7 @@ namespace UI
         private readonly PersonalBLL _bll = new PersonalBLL();
         private readonly TipoServicioBLL _tipoSrvBll = new TipoServicioBLL();
         private bool _suppressDialogs = false;
-        private string _pendingInitialMessage = null;
+        private string? _pendingInitialMessage = null;
 
         public GestionPersonal()
         {
@@ -68,7 +68,7 @@ namespace UI
         }
         private void btnBuscarPes_Click_1(object sender, EventArgs e)
         {
-            var criterio = txtBuscaPers.Text?.Trim();
+            var criterio = txtBuscaPers.Text.Trim();
             var lista = _bll.BuscarPorCriterio(criterio);
             if (lista.Count == 0)
             {
@@ -89,9 +89,9 @@ namespace UI
         {
             try
             {
-                var nombre = txtNombrePers.Text?.Trim();
-                var dni = txtDNIPers.Text?.Trim();
-                var especialidad = (comboBox1.SelectedItem as TipoServicioBE)?.Descripcion;
+                var nombre = txtNombrePers.Text.Trim();
+                var dni = txtDNIPers.Text.Trim();
+                var especialidad = (comboBox1.SelectedItem as TipoServicioBE)?.Descripcion ?? string.Empty;
                 var habs = ObtenerHabilitacionesSeleccionadas();
 
                 _bll.Agregar(nombre, dni, especialidad, habs, disponible: true, datos: LeerDatosAdicionales());
@@ -114,9 +114,9 @@ namespace UI
                     MessageBox.Show("Seleccione un registro en la grilla para modificar.", "Modificar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                var nombre = txtNombrePers.Text?.Trim();
-                var dni = txtDNIPers.Text?.Trim();
-                var especialidad = (comboBox1.SelectedItem as TipoServicioBE)?.Descripcion;
+                var nombre = txtNombrePers.Text.Trim();
+                var dni = txtDNIPers.Text.Trim();
+                var especialidad = (comboBox1.SelectedItem as TipoServicioBE)?.Descripcion ?? string.Empty;
                 var habs = ObtenerHabilitacionesSeleccionadas();
                 _bll.Actualizar(seleccionado.IdPersonal, nombre, dni, especialidad, habs, disponible: seleccionado.Estado_Disponibilidad, datos: LeerDatosAdicionales());
                 RefrescarGrilla(_bll.Listar());
@@ -150,7 +150,7 @@ namespace UI
                 MessageBox.Show(ex.Message, "Error al eliminar", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void DataGridView1_SelectionChanged(object sender, EventArgs e)
+        private void DataGridView1_SelectionChanged(object? sender, EventArgs e)
         {
             var sel = GetSeleccionado();
             if (sel == null) return;
@@ -162,7 +162,7 @@ namespace UI
             dataGridView1.AutoGenerateColumns = true;
             dataGridView1.DataSource = datos;
         }
-        private PersonalBE GetSeleccionado()
+        private PersonalBE? GetSeleccionado()
         {
             if (dataGridView1.CurrentRow?.DataBoundItem is PersonalBE p)
                 return p;

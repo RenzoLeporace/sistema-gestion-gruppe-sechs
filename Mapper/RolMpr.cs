@@ -45,7 +45,7 @@ namespace Mapper
             lista.RemoveAll(r => r.Id == id);
             XMLHelper.Guardar(_path, lista);
         }
-        public BERol ObtenerPorId(int id)
+        public BERol? ObtenerPorId(int id)
         {
             return ObtenerTodos().FirstOrDefault(r => r.Id == id);
         }
@@ -55,7 +55,7 @@ namespace Mapper
                             .ToDictionary(r => r.Id, r => r);
             foreach (var rol in roles)
             {
-                rol.RolesHijos?.Clear();
+                rol.RolesHijos.Clear();
 
                 var hijosIds = rol.RolesHijosIds?.Distinct().ToList() ?? new List<int>();
                 foreach (var id in hijosIds)

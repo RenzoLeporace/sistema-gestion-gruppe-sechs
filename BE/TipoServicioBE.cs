@@ -9,7 +9,7 @@ namespace BE
     public class TipoServicioBE
     {
         public int IdTipoServicio { get; set; }
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
         public double TarifaBase { get; set; }
 
         public TipoServicioBE() { }

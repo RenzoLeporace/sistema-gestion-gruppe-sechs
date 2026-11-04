@@ -3,11 +3,11 @@
     public class ClienteBE
     {
         public int IdCliente { get; set; }
-        public string Nombre { get; set; }
-        public string Correo { get; set; }
-        public string DNI_CUIL { get; set; }
-        public string Telefono { get; set; }
-        public string Direccion { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
+        public string DNI_CUIL { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
+        public string Direccion { get; set; } = string.Empty;
 
         public ClienteBE() { }
 

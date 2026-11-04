@@ -46,7 +46,7 @@ Check(new ServicioBLL().Listar().Any(s => s.IdServicio == servicio.IdServicio), 
 
 // El flujo de facturación exige servicios finalizados. Se adelantan sólo los datos aislados de la prueba.
 var servicioMpr = new ServicioMpr();
-var facturable = servicioMpr.GetById(servicio.IdServicio);
+var facturable = servicioMpr.GetById(servicio.IdServicio) ?? throw new Exception("Falló: servicio de prueba no encontrado");
 facturable.Fecha_hora_inicio = DateTime.Now.AddHours(-13);
 facturable.Fecha_hora_fin = DateTime.Now.AddHours(-1);
 servicioMpr.Update(facturable);

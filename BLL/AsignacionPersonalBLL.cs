@@ -140,7 +140,7 @@ namespace BLL
                 idPersonal: persona.IdPersonal,
                 inicio: servicio.Fecha_hora_inicio,
                 fin: servicio.Fecha_hora_fin,
-                especialidadAsignacion: persona.Especialidad,
+                especialidadAsignacion: persona.Especialidad ?? string.Empty,
                 criterio: especialidadMatch ? "Especialidad" : "Habilitacion"
             );
 

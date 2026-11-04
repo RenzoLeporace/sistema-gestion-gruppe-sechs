@@ -12,7 +12,7 @@ namespace Mapper
 
         public List<MantenimientoBE> GetAll() => XMLHelper.Leer<MantenimientoBE>(_path);
 
-        public MantenimientoBE GetById(int id) => GetAll().FirstOrDefault(m => m.IdMantenimiento == id);
+        public MantenimientoBE? GetById(int id) => GetAll().FirstOrDefault(m => m.IdMantenimiento == id);
 
         public List<MantenimientoBE> GetByVehiculo(int idVehiculo)
         {

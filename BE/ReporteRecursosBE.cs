@@ -21,9 +21,9 @@ namespace BE
     }
     public class ReporteRecursoItemBE
     {
-        public string Tipo { get; set; }
+        public string Tipo { get; set; } = string.Empty;
         public int Id { get; set; }
-        public string Identificador { get; set; }
+        public string Identificador { get; set; } = string.Empty;
         public double HorasAsignadas { get; set; }
         public int ServiciosParticipados { get; set; }
         public double IngresoEstimado { get; set; }

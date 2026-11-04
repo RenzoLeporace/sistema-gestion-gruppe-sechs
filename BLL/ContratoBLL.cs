@@ -51,7 +51,7 @@ namespace BLL
             return true;
         }
 
-        public ContratoBE BuscarPorId(int id)
+        public ContratoBE? BuscarPorId(int id)
         {
             return _contratoMpr.GetAll().FirstOrDefault(c => c.IdContrato == id);
         }

@@ -12,7 +12,7 @@ namespace BLL
         {
             return _mapper.GetAll();
         }
-        public TipoServicioBE BuscarPorDescripcion(string desc)
+        public TipoServicioBE? BuscarPorDescripcion(string desc)
         {
             if (string.IsNullOrWhiteSpace(desc)) return null;
             return _mapper.GetByDescripcion(desc);
