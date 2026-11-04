@@ -1,0 +1,24 @@
+# Builds the solution and runs the integration checks on every push and pull request.
+name: Compilación y chequeos
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Compilar
+        run: dotnet build "Sistema Gestion Gruppe Sechs.sln" --configuration Release
+      - name: Chequeos de integración
+        run: dotnet run --project tests/IntegrationChecks/IntegrationChecks.csproj --configuration Release
