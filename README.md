@@ -1,5 +1,7 @@
 # Sistema de Gestión Gruppe Sechs
 
+[![Compilación y chequeos](https://github.com/RenzoLeporace/sistema-gestion-gruppe-sechs/actions/workflows/ci.yml/badge.svg)](https://github.com/RenzoLeporace/sistema-gestion-gruppe-sechs/actions/workflows/ci.yml)
+
 Aplicación de escritorio en C# y Windows Forms para gestionar las operaciones de una empresa de seguridad. Centraliza clientes, contratos, servicios, personal, vehículos y facturación en una misma interfaz.
 
 ## Funcionalidades
