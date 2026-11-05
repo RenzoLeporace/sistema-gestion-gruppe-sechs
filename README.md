@@ -18,7 +18,7 @@ Necesitás el SDK de .NET especificado en [`global.json`](global.json). El proye
 
 1. Abrí [`Sistema Gestion Gruppe Sechs.sln`](Sistema%20Gestion%20Gruppe%20Sechs.sln) en Visual Studio con la carga de trabajo de escritorio de .NET.
 2. Seleccioná `UI` como proyecto de inicio y ejecutalo. La aplicación comienza en la pantalla de inicio de sesión.
-3. Para el primer acceso, usá el procedimiento de acceso del equipo.
+3. Ingresá con el usuario `ADMIN` y la contraseña `ADMIN`. En el primer acceso, el sistema te pide elegir una contraseña nueva de al menos 8 caracteres.
 
 Desde la raíz del repositorio también podés compilar y ejecutar:
 
@@ -35,8 +35,14 @@ dotnet run --project UI/UI.csproj
 | [`BLL/`](BLL/) | Reglas de negocio y coordinación de operaciones. |
 | [`BE/`](BE/) | Entidades de negocio. |
 | [`Mapper/`](Mapper/) | Lectura y escritura de datos XML. |
-| [`Seguridad/`](Seguridad/) | Utilidades de seguridad. |
-| [`tests/IntegrationChecks/`](tests/IntegrationChecks/) | Comprobaciones de clientes, personal, contratos, facturas, pagos y respaldos. |
+| [`Seguridad/`](Seguridad/) | Hash de contraseñas con PBKDF2. |
+| [`tests/IntegrationChecks/`](tests/IntegrationChecks/) | Comprobaciones de contraseñas, clientes, personal, contratos, facturas, pagos y respaldos. |
+
+## Seguridad
+
+- Las contraseñas se guardan como hash PBKDF2-HMAC-SHA256, con 600.000 iteraciones y una sal aleatoria por contraseña. No se pueden recuperar: para validar un inicio de sesión se vuelve a calcular el hash y se compara.
+- Las contraseñas guardadas por versiones anteriores, que solo estaban en Base64, se convierten a hash al abrir la aplicación o al iniciar sesión con ellas.
+- Una contraseña nueva debe tener al menos 8 caracteres y no puede ser igual al nombre de usuario. Si un usuario tiene como contraseña su propio nombre, como la cuenta inicial `ADMIN`, debe cambiarla al ingresar.
 
 ## Comprobaciones de integración
 

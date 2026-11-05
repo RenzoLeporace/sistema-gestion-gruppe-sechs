@@ -35,7 +35,6 @@
             BtnQuitarPermisoAUsuario = new Button();
             BtnAsociarPermisoAUsuario = new Button();
             checkBox1 = new CheckBox();
-            checkBox2 = new CheckBox();
             checkBox3 = new CheckBox();
             label6 = new Label();
             label7 = new Label();
@@ -136,17 +135,6 @@
             checkBox1.Text = "Bloqueado";
             checkBox1.UseVisualStyleBackColor = true;
             checkBox1.CheckedChanged += checkBox1_CheckedChanged;
-            // 
-            // checkBox2
-            // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(255, 140);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(172, 24);
-            checkBox2.TabIndex = 15;
-            checkBox2.Text = "Descifrar/Cifrar Clave";
-            checkBox2.UseVisualStyleBackColor = true;
-            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
             // 
             // checkBox3
             // 
@@ -476,7 +464,6 @@
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(checkBox3);
-            Controls.Add(checkBox2);
             Controls.Add(checkBox1);
             Controls.Add(BtnQuitarPermisoAUsuario);
             Controls.Add(BtnAsociarPermisoAUsuario);
@@ -499,7 +486,6 @@
         private Button BtnQuitarPermisoAUsuario;
         private Button BtnAsociarPermisoAUsuario;
         private CheckBox checkBox1;
-        private CheckBox checkBox2;
         private CheckBox checkBox3;
         private Label label6;
         private Label label7;

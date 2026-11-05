@@ -15,14 +15,19 @@ namespace Mapper
         {
             public int Id { get; set; }
             public string? Nombre { get; set; }
-            public string PasswordEncrypted { get; set; } = string.Empty;
+            public string PasswordHash { get; set; } = string.Empty;
+            // Formato anterior: la contraseña en Base64. Solo se lee para migrarla a hash y nunca se vuelve a escribir.
+            public string? PasswordEncrypted { get; set; }
             public List<int> RolesIds { get; set; } = new();
             public bool Bloqueado { get; set; }
             public bool Activo { get; set; } = true;
-            public bool DescifrarClave { get; set; }
+            public bool DebeCambiarClave { get; set; }
 
             public List<int> PermisosIds { get; set; } = new();
         }
+
+        private static string ClaveGuardada(UsuarioDto dto) =>
+            string.IsNullOrEmpty(dto.PasswordHash) ? dto.PasswordEncrypted ?? string.Empty : dto.PasswordHash;
 
         public UsuarioMapper()
         {
@@ -45,10 +50,10 @@ namespace Mapper
                 {
                     Id = dto.Id,
                     Nombre = dto.Nombre,
-                    PasswordEncrypted = dto.PasswordEncrypted,
+                    PasswordHash = ClaveGuardada(dto),
                     Bloqueado = dto.Bloqueado,
                     Activo = dto.Activo,
-                    DescifrarClave = dto.DescifrarClave
+                    DebeCambiarClave = dto.DebeCambiarClave
                 };
                 var rolesAsignados = roles.Where(r => dto.RolesIds != null && dto.RolesIds.Contains(r.Id)).ToList();
                 if (rolesAsignados != null && rolesAsignados.Any())
@@ -74,11 +79,11 @@ namespace Mapper
             {
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
-                PasswordEncrypted = usuario.PasswordEncrypted,
+                PasswordHash = usuario.PasswordHash,
                 RolesIds = usuario.Roles?.Select(r => r.Id).ToList() ?? new List<int>(),
                 Bloqueado = usuario.Bloqueado,
                 Activo = usuario.Activo,
-                DescifrarClave = usuario.DescifrarClave,
+                DebeCambiarClave = usuario.DebeCambiarClave,
                 PermisosIds = usuario.Permisos?.OfType<BEPermisoSimple>().Select(p => p.Id).ToList() ?? new List<int>()
             };
 
@@ -101,7 +106,7 @@ namespace Mapper
             var roles = _rolMpr.ObtenerTodos().Where(r => dto.RolesIds != null && dto.RolesIds.Contains(r.Id)).ToList();
             var permisos = _permMpr.ObtenerTodos().Where(p => dto.PermisosIds != null && dto.PermisosIds.Contains(p.Id)).ToList();
 
-            var u = new BEUsuario { Id = dto.Id, Nombre = dto.Nombre, PasswordEncrypted = dto.PasswordEncrypted, Bloqueado = dto.Bloqueado, Activo = dto.Activo, DescifrarClave = dto.DescifrarClave };
+            var u = new BEUsuario { Id = dto.Id, Nombre = dto.Nombre, PasswordHash = ClaveGuardada(dto), Bloqueado = dto.Bloqueado, Activo = dto.Activo, DebeCambiarClave = dto.DebeCambiarClave };
             if (roles != null && roles.Any())
                 u.Roles.AddRange(roles);
             if (permisos != null && permisos.Any())

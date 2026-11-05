@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 using BLL;
 using BE;
-using Seguridad;
 
 namespace UI
 {
@@ -195,27 +194,16 @@ namespace UI
                 root.Expand();
                 checkBox1.Checked = usuario.Bloqueado;
                 checkBox3.Checked = usuario.Activo;
-                checkBox2.Checked = usuario.DescifrarClave;
                 txtUsuarioId.Text = usuario.Id.ToString();
                 txtUsuarioNombre.Text = usuario.Nombre ?? string.Empty;
 
-                var encrypted = usuario.PasswordEncrypted ?? string.Empty;
-                if (usuario.DescifrarClave)
-                {
-                    try { txtUsuarioPassword.Text = Encriptador.Decrypt(encrypted); }
-                    catch { txtUsuarioPassword.Text = string.Empty; }
-                }
-                else
-                {
-                    txtUsuarioPassword.Text = encrypted;
-                }
-                txtUsuarioPassword.UseSystemPasswordChar = false;
+                // La contraseña se guarda como hash y no se puede mostrar.
+                txtUsuarioPassword.Text = "Protegida";
             }
             else
             {
                 checkBox1.Checked = false;
                 checkBox3.Checked = false;
-                checkBox2.Checked = false;
                 txtUsuarioId.Text = string.Empty;
                 txtUsuarioNombre.Text = string.Empty;
                 txtUsuarioPassword.Text = string.Empty;
@@ -362,38 +350,6 @@ namespace UI
                 _suppressCheckboxEvents = false;
                 MessageBox.Show($"Error al actualizar estado Activo: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_suppressCheckboxEvents) return;
-            var usuario = ObtenerUsuarioSeleccionado();
-            if (usuario == null) return;
-
-            usuario.DescifrarClave = checkBox2.Checked;
-            try
-            {
-                BLLUsuario.Instance.ModificarUsuario(usuario);
-                var encrypted = usuario.PasswordEncrypted ?? string.Empty;
-                if (usuario.DescifrarClave)
-                {
-                    try
-                    {
-                        txtUsuarioPassword.Text = Encriptador.Decrypt(encrypted);
-                    }
-                    catch
-                    {
-                        txtUsuarioPassword.Text = string.Empty;
-                    }
-                }
-                else
-                {
-                    txtUsuarioPassword.Text = encrypted;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al actualizar Descifrar/Cifrar Clave: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void SelectUsuarioById(int id)

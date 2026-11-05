@@ -1,6 +1,8 @@
+using System.Text;
 using BE;
 using BLL;
 using Mapper;
+using Seguridad;
 
 var data = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
 if (Directory.Exists(data)) Directory.Delete(data, recursive: true);
@@ -12,6 +14,39 @@ void Check(bool condition, string name)
     Console.WriteLine($"OK: {name}");
     checks++;
 }
+
+// Usuarios: las contraseñas guardadas con el formato anterior (Base64) se convierten a hash al iniciar.
+// Va primero porque la bitácora de las demás operaciones ya inicializa BLLUsuario.
+string FormatoAnterior(string clave) => Convert.ToBase64String(Encoding.Unicode.GetBytes(clave));
+var usuariosXml = Path.Combine(data, "usuarios.xml");
+Directory.CreateDirectory(data);
+File.WriteAllText(usuariosXml, $"""
+    <?xml version="1.0"?>
+    <ArrayOfUsuarioDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <UsuarioDto><Id>1</Id><Nombre>ADMIN</Nombre><PasswordEncrypted>{FormatoAnterior("ADMIN")}</PasswordEncrypted><RolesIds /><Bloqueado>false</Bloqueado><Activo>true</Activo><DescifrarClave>true</DescifrarClave><PermisosIds /></UsuarioDto>
+      <UsuarioDto><Id>2</Id><Nombre>operador</Nombre><PasswordEncrypted>{FormatoAnterior("clave-anterior")}</PasswordEncrypted><RolesIds /><Bloqueado>false</Bloqueado><Activo>true</Activo><DescifrarClave>false</DescifrarClave><PermisosIds /></UsuarioDto>
+    </ArrayOfUsuarioDto>
+    """);
+var usuarios = BLLUsuario.Instance;
+var usuariosGuardados = File.ReadAllText(usuariosXml);
+Check(usuarios.GetUsuarios().Count() == 2 && usuarios.GetUsuarios().All(u => HashContrasena.EsHash(u.PasswordHash)), "contraseñas anteriores migradas a hash");
+Check(!usuariosGuardados.Contains("PasswordEncrypted") && !usuariosGuardados.Contains(FormatoAnterior("clave-anterior")), "usuarios.xml sin contraseñas legibles");
+Check(usuarios.ValidarCredenciales("operador", "clave-anterior"), "inicio de sesión con contraseña migrada");
+Check(!usuarios.ValidarCredenciales("operador", "otra-clave"), "rechazo de contraseña incorrecta");
+Check(usuarios.ValidarCredenciales("ADMIN", "ADMIN") && usuarios.CurrentUser?.DebeCambiarClave == true, "ADMIN inicial obligado a cambiar la contraseña");
+try { usuarios.CambiarClave("ADMIN", "corta"); throw new Exception("Aceptó una contraseña corta"); }
+catch (ArgumentException) { Check(true, "rechazo de contraseña corta"); }
+try { usuarios.CambiarClave("incorrecta", "Gruppe-Sechs-2026"); throw new Exception("Aceptó una contraseña actual incorrecta"); }
+catch (ArgumentException) { Check(true, "cambio de contraseña exige la actual"); }
+usuarios.CambiarClave("ADMIN", "Gruppe-Sechs-2026");
+Check(usuarios.CurrentUser?.DebeCambiarClave == false, "cambio de contraseña quita la obligación");
+Check(!usuarios.ValidarCredenciales("ADMIN", "ADMIN") && usuarios.ValidarCredenciales("ADMIN", "Gruppe-Sechs-2026"), "solo vale la contraseña nueva");
+try { usuarios.CrearUsuario(new BEUsuario { Nombre = "supervisor" }, "supervisor"); throw new Exception("Aceptó una contraseña igual al usuario"); }
+catch (ArgumentException) { Check(true, "rechazo de contraseña igual al usuario"); }
+var hashUno = HashContrasena.Calcular("misma-clave");
+var hashDos = HashContrasena.Calcular("misma-clave");
+Check(hashUno != hashDos && HashContrasena.Verificar("misma-clave", hashUno) && HashContrasena.Verificar("misma-clave", hashDos), "sal distinta para cada hash");
+usuarios.Logout();
 
 var clientes = new ClienteBLL();
 var cliente = clientes.Alta("Cliente prueba", "Calle 123", "1122334455", "test@example.com", "30123456");

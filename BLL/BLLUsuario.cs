@@ -16,15 +16,21 @@ namespace BLL
         private List<BEUsuario> _usuarios = new();
 
         public BEUsuario? CurrentUser { get; private set; }
+        public const int LongitudMinimaClave = 8;
+        private const string NombreAdmin = "ADMIN";
+        private const string ClaveInicialAdmin = "ADMIN";
+
         private BLLUsuario()
         {
+            MigrarClavesAnteriores();
             _usuarios = _mapper.ObtenerTodos() ?? new List<BEUsuario>();
-            if (!_usuarios.Any(u => string.Equals(u.Nombre, "ADMIN", StringComparison.OrdinalIgnoreCase)))
+            if (!_usuarios.Any(u => string.Equals(u.Nombre, NombreAdmin, StringComparison.OrdinalIgnoreCase)))
             {
                 var admin = new BEUsuario
                 {
-                    Nombre = "ADMIN",
-                    PasswordEncrypted = Encriptador.Encrypt("ADMIN"),
+                    Nombre = NombreAdmin,
+                    PasswordHash = HashContrasena.Calcular(ClaveInicialAdmin),
+                    DebeCambiarClave = true,
                     Activo = true,
                     Bloqueado = false
                 };
@@ -49,10 +55,10 @@ namespace BLL
         {
             if (usuario == null) throw new ArgumentNullException(nameof(usuario));
             if (string.IsNullOrWhiteSpace(usuario.Nombre)) throw new ArgumentException("El nombre de usuario es requerido.", nameof(usuario));
-            if (string.IsNullOrEmpty(password)) throw new ArgumentException("La contraseña es requerida.", nameof(password));
+            ValidarClaveNueva(usuario.Nombre, password);
             if (ObtenerPorNombre(usuario.Nombre) != null)
                 throw new InvalidOperationException("Ya existe un usuario con ese nombre.");
-            usuario.PasswordEncrypted = Encriptador.Encrypt(password);
+            usuario.PasswordHash = HashContrasena.Calcular(password);
             _mapper.Guardar(usuario);
             _usuarios = _mapper.ObtenerTodos() ?? new List<BEUsuario>();
             return usuario;
@@ -83,21 +89,66 @@ namespace BLL
             var usuario = ObtenerPorNombre(nombre);
             if (usuario == null) return false;
             if (usuario.Bloqueado || !usuario.Activo) return false;
-            var almacenada = usuario.PasswordEncrypted;
-            if (string.IsNullOrWhiteSpace(almacenada)) return false;
-            string desencriptada;
-            try
+            if (!ClaveCorrecta(usuario, password)) return false;
+            var actualizar = false;
+            if (HashContrasena.NecesitaActualizarse(usuario.PasswordHash))
             {
-                desencriptada = Encriptador.Decrypt(almacenada);
+                usuario.PasswordHash = HashContrasena.Calcular(password);
+                actualizar = true;
             }
-            catch
+            // Una contraseña igual al nombre de usuario (como la inicial ADMIN/ADMIN) se tiene que cambiar.
+            if (!usuario.DebeCambiarClave && string.Equals(password, usuario.Nombre, StringComparison.OrdinalIgnoreCase))
             {
-                return false;
+                usuario.DebeCambiarClave = true;
+                actualizar = true;
             }
-            if (!string.Equals(desencriptada, password, StringComparison.Ordinal))
-                return false;
+            if (actualizar) _mapper.Guardar(usuario);
             CurrentUser = usuario;
             return true;
+        }
+        public void CambiarClave(string claveActual, string claveNueva)
+        {
+            var usuario = CurrentUser != null ? _mapper.ObtenerPorId(CurrentUser.Id) : null;
+            if (usuario == null)
+                throw new InvalidOperationException("Inicie sesión para cambiar la contraseña.");
+            if (!ClaveCorrecta(usuario, claveActual ?? string.Empty))
+                throw new ArgumentException("La contraseña actual no es correcta.");
+            ValidarClaveNueva(usuario.Nombre, claveNueva);
+            if (string.Equals(claveActual, claveNueva, StringComparison.Ordinal))
+                throw new ArgumentException("La contraseña nueva debe ser distinta de la actual.");
+            usuario.PasswordHash = HashContrasena.Calcular(claveNueva);
+            usuario.DebeCambiarClave = false;
+            _mapper.Guardar(usuario);
+            _usuarios = _mapper.ObtenerTodos() ?? new List<BEUsuario>();
+            CurrentUser = _mapper.ObtenerPorId(usuario.Id);
+        }
+        public static void ValidarClaveNueva(string? nombreUsuario, string? clave)
+        {
+            if (string.IsNullOrEmpty(clave) || clave.Length < LongitudMinimaClave)
+                throw new ArgumentException($"La contraseña debe tener al menos {LongitudMinimaClave} caracteres.");
+            if (string.Equals(clave, nombreUsuario?.Trim(), StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("La contraseña no puede ser igual al nombre de usuario.");
+        }
+        private static bool ClaveCorrecta(BEUsuario usuario, string password)
+        {
+            if (HashContrasena.EsHash(usuario.PasswordHash))
+                return HashContrasena.Verificar(password, usuario.PasswordHash);
+            // Una copia de respaldo restaurada puede traer contraseñas con el formato anterior.
+            return HashContrasena.TryLeerFormatoAnterior(usuario.PasswordHash, out var anterior)
+                && string.Equals(anterior, password, StringComparison.Ordinal);
+        }
+        /// <summary>
+        /// Convierte a hash las contraseñas guardadas con el formato anterior (Base64),
+        /// para que ninguna quede legible en los archivos de datos.
+        /// </summary>
+        private void MigrarClavesAnteriores()
+        {
+            foreach (var usuario in _mapper.ObtenerTodos() ?? new List<BEUsuario>())
+            {
+                if (!HashContrasena.TryLeerFormatoAnterior(usuario.PasswordHash, out var clave)) continue;
+                usuario.PasswordHash = HashContrasena.Calcular(clave);
+                _mapper.Guardar(usuario);
+            }
         }
         public void Logout()
         {

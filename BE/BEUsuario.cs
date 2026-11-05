@@ -10,10 +10,10 @@ namespace BE
     {
         public int Id { get; set; }
         public string? Nombre { get; set; }
-        public string PasswordEncrypted { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public bool Bloqueado { get; set; }
         public bool Activo { get; set; } = true;
-        public bool DescifrarClave { get; set; }
+        public bool DebeCambiarClave { get; set; }
 
         List<BEComponente> _permisos;
         List<BERol> _roles;

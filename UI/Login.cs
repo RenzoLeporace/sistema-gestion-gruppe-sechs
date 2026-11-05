@@ -29,6 +29,13 @@ namespace UI
             {
                 if (_bllUser.ValidarCredenciales(usuario, password))
                 {
+                    if (_bllUser.CurrentUser?.DebeCambiarClave == true && !PedirClaveNueva(password))
+                    {
+                        _bllUser.Logout();
+                        txtPassword.Clear();
+                        txtPassword.Focus();
+                        return;
+                    }
                     DialogResult = DialogResult.OK;
                     Close();
                     return;
@@ -41,6 +48,13 @@ namespace UI
             {
                 MessageBox.Show($"Error al validar credenciales: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private bool PedirClaveNueva(string claveActual)
+        {
+            using var frm = new CambiarClave(claveActual);
+            if (frm.ShowDialog(this) == DialogResult.OK) return true;
+            MessageBox.Show("Debe cambiar la contraseña para ingresar al sistema.", "Cambio de contraseña", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
         }
         private void btnCancelar_Click(object sender, EventArgs e)
         {
