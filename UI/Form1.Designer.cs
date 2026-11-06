@@ -306,12 +306,12 @@ namespace UI
             // 
             // pictureBox1
             // 
-            pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBox1.Anchor = AnchorStyles.None;
             pictureBox1.BackColor = Color.FromArgb(15, 23, 42);
-            pictureBox1.Image = Properties.Resources.gruppe;
-            pictureBox1.Location = new Point(0, 28);
+            pictureBox1.Image = Properties.Resources.logo;
+            pictureBox1.Location = new Point(680, 58);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(1240, 365);
+            pictureBox1.Size = new Size(300, 300);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;

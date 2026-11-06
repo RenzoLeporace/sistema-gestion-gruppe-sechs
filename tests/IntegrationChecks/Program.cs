@@ -130,8 +130,11 @@ var uiThread = new Thread(() =>
         using var main = new Form1();
         using var staff = new GestionPersonal();
         using var history = new HistorialServicios();
-        if (main.Controls.Count == 0 || staff.Controls.Count == 0 || history.Controls.Count == 0)
+        using var security = new RolesYpermisos();
+        if (main.Controls.Count == 0 || staff.Controls.Count == 0 || history.Controls.Count == 0 || security.Controls.OfType<Panel>().Count() < 4)
             throw new Exception("Formulario sin controles");
+        if (main.Controls.OfType<PictureBox>().Single().Image == null)
+            throw new Exception("Falta el logo de inicio");
     }
     catch (Exception ex) { uiError = ex; }
 });
@@ -139,7 +142,7 @@ uiThread.SetApartmentState(ApartmentState.STA);
 uiThread.Start();
 uiThread.Join();
 if (uiError != null) throw new Exception("Falló la apertura de formularios", uiError);
-Check(true, "apertura de formularios principal, personal e historial");
+Check(true, "apertura de formularios principal, personal, historial y roles");
 
 Console.WriteLine($"{checks} comprobaciones superadas.");
 

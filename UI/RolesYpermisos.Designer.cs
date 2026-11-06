@@ -67,6 +67,13 @@
             label12 = new Label();
             label13 = new Label();
             button1 = new Button();
+            panelUsuarios = new Panel();
+            panelRoles = new Panel();
+            panelPermisos = new Panel();
+            panelAsignados = new Panel();
+            tituloPagina = new Label();
+            ayudaPagina = new Label();
+            ayudaSeleccion = new Label();
             SuspendLayout();
             // 
             // label1
@@ -471,8 +478,99 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
+            // Cuatro áreas visibles: usuarios, roles, catálogo y asignaciones.
+            tituloPagina.Text = "Roles y permisos";
+            tituloPagina.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
+            tituloPagina.AutoSize = true;
+            tituloPagina.Location = new Point(22, 15);
+            ayudaPagina.Text = "Seleccioná un usuario o rol; marcá permisos para asociarlos o quitarlos.";
+            ayudaPagina.AutoSize = true;
+            ayudaPagina.Location = new Point(25, 65);
+            ayudaSeleccion.Text = "Los cambios se aplican al usuario y rol seleccionados.";
+            ayudaSeleccion.AutoSize = true;
+            ayudaSeleccion.Location = new Point(15, 685);
+
+            panelUsuarios.Location = new Point(20, 105);
+            panelUsuarios.Size = new Size(330, 760);
+            panelUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            panelRoles.Location = new Point(365, 105);
+            panelRoles.Size = new Size(330, 760);
+            panelRoles.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            panelPermisos.Location = new Point(710, 105);
+            panelPermisos.Size = new Size(330, 760);
+            panelPermisos.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            panelAsignados.Location = new Point(1055, 105);
+            panelAsignados.Size = new Size(380, 760);
+            panelAsignados.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+
+            panelUsuarios.Controls.AddRange(new Control[] { label13, label1, txtUsuarioId, label2, txtUsuarioNombre,
+                label3, txtUsuarioPassword, checkBox1, checkBox3, btnCrearUser, button1, label4, treeViewUsuarios });
+            panelRoles.Controls.AddRange(new Control[] { label9, label6, label7, textBox1, BtnAltaRol,
+                BtnModificarRol, BtnEliminarRol, label8, treeViewRoles, btnAsociarRolARol, btnQuitarRolHijo });
+            panelPermisos.Controls.AddRange(new Control[] { label10, treeViewPermisos, label5,
+                BtnAsociarPermisoAUsuario, BtnQuitarPermisoAUsuario, BtnAsociarPermisoArol, BtnQuitarPermisoArol, ayudaSeleccion });
+            panelAsignados.Controls.AddRange(new Control[] { label12, treeViewRolesYPermisosUsuario,
+                BtnAsociarRolesaUsuarios, DesasociarRolesAUsuarios, label11, treeViewPermisosPorRol,
+                BtnLimpiarCampos, BtnSalir });
+
+            label13.Text = "01  Usuarios"; label13.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold); label13.Location = new Point(15, 15);
+            label1.Location = new Point(15, 65); txtUsuarioId.Location = new Point(100, 62); txtUsuarioId.Size = new Size(195, 27);
+            label2.Location = new Point(15, 105); txtUsuarioNombre.Location = new Point(100, 102); txtUsuarioNombre.Size = new Size(195, 27);
+            label3.Text = "Clave:"; label3.Location = new Point(15, 145); txtUsuarioPassword.Location = new Point(100, 142); txtUsuarioPassword.Size = new Size(195, 27);
+            checkBox1.Location = new Point(15, 185); checkBox3.Location = new Point(170, 185);
+            btnCrearUser.Text = "Crear usuario"; btnCrearUser.Location = new Point(15, 225); btnCrearUser.Size = new Size(145, 40);
+            button1.Text = "Eliminar usuario"; button1.Location = new Point(170, 225); button1.Size = new Size(145, 40);
+            label4.Text = "Seleccioná un usuario"; label4.Location = new Point(15, 285);
+            treeViewUsuarios.Location = new Point(15, 315); treeViewUsuarios.Size = new Size(300, 285);
+            treeViewUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            label9.Text = "02  Roles"; label9.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold); label9.Location = new Point(15, 15);
+            label6.Location = new Point(15, 65); label6.Text = "ID automático";
+            label7.Location = new Point(15, 105); textBox1.Location = new Point(100, 102); textBox1.Size = new Size(195, 27);
+            BtnAltaRol.Text = "Crear"; BtnAltaRol.Location = new Point(15, 155); BtnAltaRol.Size = new Size(95, 40);
+            BtnModificarRol.Text = "Guardar"; BtnModificarRol.Location = new Point(116, 155); BtnModificarRol.Size = new Size(95, 40);
+            BtnEliminarRol.Text = "Eliminar"; BtnEliminarRol.Location = new Point(217, 155); BtnEliminarRol.Size = new Size(95, 40);
+            label8.Text = "Seleccioná un rol"; label8.Location = new Point(15, 215);
+            treeViewRoles.Location = new Point(15, 245); treeViewRoles.Size = new Size(300, 255);
+            treeViewRoles.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnAsociarRolARol.Text = "Vincular rol"; btnAsociarRolARol.Location = new Point(15, 530); btnAsociarRolARol.Size = new Size(145, 40);
+            btnQuitarRolHijo.Text = "Quitar vínculo"; btnQuitarRolHijo.Location = new Point(170, 530); btnQuitarRolHijo.Size = new Size(145, 40);
+
+            label10.Text = "03  Permisos disponibles"; label10.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold); label10.Location = new Point(15, 15);
+            treeViewPermisos.Location = new Point(15, 60); treeViewPermisos.Size = new Size(300, 300);
+            treeViewPermisos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label5.Text = "Aplicar permisos seleccionados"; label5.Location = new Point(15, 375);
+            BtnAsociarPermisoAUsuario.Text = "Añadir al usuario"; BtnAsociarPermisoAUsuario.Location = new Point(15, 410); BtnAsociarPermisoAUsuario.Size = new Size(145, 40);
+            BtnQuitarPermisoAUsuario.Text = "Quitar del usuario"; BtnQuitarPermisoAUsuario.Location = new Point(170, 410); BtnQuitarPermisoAUsuario.Size = new Size(145, 40);
+            BtnAsociarPermisoArol.Text = "Añadir al rol"; BtnAsociarPermisoArol.Location = new Point(15, 465); BtnAsociarPermisoArol.Size = new Size(145, 40);
+            BtnQuitarPermisoArol.Text = "Quitar del rol"; BtnQuitarPermisoArol.Location = new Point(170, 465); BtnQuitarPermisoArol.Size = new Size(145, 40);
+            ayudaSeleccion.Location = new Point(15, 535);
+
+            label12.Text = "04  Accesos del usuario"; label12.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold); label12.Location = new Point(15, 15);
+            treeViewRolesYPermisosUsuario.Location = new Point(15, 60); treeViewRolesYPermisosUsuario.Size = new Size(350, 190);
+            treeViewRolesYPermisosUsuario.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            BtnAsociarRolesaUsuarios.Text = "Asignar rol al usuario"; BtnAsociarRolesaUsuarios.Location = new Point(15, 265); BtnAsociarRolesaUsuarios.Size = new Size(165, 42);
+            DesasociarRolesAUsuarios.Text = "Quitar rol del usuario"; DesasociarRolesAUsuarios.Location = new Point(195, 265); DesasociarRolesAUsuarios.Size = new Size(170, 42);
+            label11.Text = "Permisos del rol elegido"; label11.Location = new Point(15, 325);
+            treeViewPermisosPorRol.Location = new Point(15, 350); treeViewPermisosPorRol.Size = new Size(350, 190);
+            treeViewPermisosPorRol.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            BtnLimpiarCampos.Text = "Limpiar selección"; BtnLimpiarCampos.Location = new Point(15, 555); BtnLimpiarCampos.Size = new Size(165, 40);
+            BtnSalir.Text = "Cerrar"; BtnSalir.Location = new Point(195, 555); BtnSalir.Size = new Size(170, 40);
+            BtnLimpiarCampos.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            BtnSalir.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+
+            Controls.Add(panelUsuarios);
+            Controls.Add(panelRoles);
+            Controls.Add(panelPermisos);
+            Controls.Add(panelAsignados);
+            Controls.Add(tituloPagina);
+            Controls.Add(ayudaPagina);
             Name = "RolesYpermisos";
-            Text = "RolesYpermisos";
+            Text = "Gruppe Sechs | Usuarios, roles y permisos";
+            ClientSize = new Size(1455, 750);
+            MinimumSize = new Size(980, 650);
+            AutoScroll = true;
+            AutoScrollMinSize = new Size(1455, 750);
             Load += RolesYpermisos_Load;
             ResumeLayout(false);
             PerformLayout();
@@ -518,5 +616,12 @@
         private Label label12;
         private Label label13;
         private Button button1;
+        private Panel panelUsuarios;
+        private Panel panelRoles;
+        private Panel panelPermisos;
+        private Panel panelAsignados;
+        private Label tituloPagina;
+        private Label ayudaPagina;
+        private Label ayudaSeleccion;
     }
 }

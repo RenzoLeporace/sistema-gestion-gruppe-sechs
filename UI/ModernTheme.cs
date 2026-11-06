@@ -45,6 +45,12 @@ namespace UI
                         grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(35, 54, 77);
                         grid.GridColor = Color.FromArgb(55, 72, 94);
                         break;
+                    case TreeView tree:
+                        tree.BackColor = Color.FromArgb(21, 35, 53);
+                        tree.ForeColor = Text;
+                        tree.BorderStyle = BorderStyle.FixedSingle;
+                        tree.LineColor = Color.FromArgb(91, 119, 150);
+                        break;
                     case TextBox box:
                         box.BackColor = Color.FromArgb(237, 243, 250);
                         box.ForeColor = Color.FromArgb(20, 32, 48);

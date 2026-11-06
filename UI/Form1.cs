@@ -11,7 +11,7 @@ namespace UI
         public Form1()
         {
             InitializeComponent();
-            menuStrip1.RenderMode = ToolStripRenderMode.Professional;
+            menuStrip1.Renderer = new DarkMenuRenderer();
             menuStrip1.BackColor = Color.FromArgb(16, 29, 48);
             menuStrip1.ForeColor = Color.White;
             foreach (ToolStripMenuItem item in menuStrip1.Items)
@@ -21,6 +21,43 @@ namespace UI
                 foreach (ToolStripItem child in item.DropDownItems)
                     child.ForeColor = Color.White;
             }
+            Resize += (_, _) => PosicionarLogo();
+            PosicionarLogo();
+        }
+        private void PosicionarLogo()
+        {
+            var areaWidth = Math.Max(0, ClientSize.Width - dashboardPanel.Right);
+            var areaHeight = Math.Max(0, ClientSize.Height - menuStrip1.Bottom);
+            var side = Math.Max(120, Math.Min(430, Math.Min(areaWidth - 80, areaHeight - 60)));
+            pictureBox1.Size = new Size(side, side);
+            pictureBox1.Location = new Point(dashboardPanel.Right + (areaWidth - side) / 2,
+                menuStrip1.Bottom + (areaHeight - side) / 2);
+        }
+        private sealed class DarkMenuRenderer : ToolStripProfessionalRenderer
+        {
+            public DarkMenuRenderer() : base(new DarkMenuColors()) { }
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                e.TextColor = e.Item.Enabled ? Color.White : Color.FromArgb(153, 167, 185);
+                base.OnRenderItemText(e);
+            }
+        }
+        private sealed class DarkMenuColors : ProfessionalColorTable
+        {
+            private static readonly Color Surface = Color.FromArgb(28, 43, 64);
+            private static readonly Color Hover = Color.FromArgb(43, 82, 132);
+            public override Color MenuItemSelected => Hover;
+            public override Color MenuItemSelectedGradientBegin => Hover;
+            public override Color MenuItemSelectedGradientEnd => Hover;
+            public override Color MenuItemPressedGradientBegin => Surface;
+            public override Color MenuItemPressedGradientMiddle => Surface;
+            public override Color MenuItemPressedGradientEnd => Surface;
+            public override Color MenuItemBorder => Hover;
+            public override Color MenuBorder => Surface;
+            public override Color ToolStripDropDownBackground => Surface;
+            public override Color ImageMarginGradientBegin => Surface;
+            public override Color ImageMarginGradientMiddle => Surface;
+            public override Color ImageMarginGradientEnd => Surface;
         }
         private void Form1_Load(object sender, EventArgs e)
         {

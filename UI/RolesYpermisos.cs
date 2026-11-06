@@ -21,6 +21,33 @@ namespace UI
         public RolesYpermisos()
         {
             InitializeComponent();
+            ModernTheme.Apply(this);
+            Resize += (_, _) => OrganizarPaneles();
+            if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
+                WindowState = FormWindowState.Maximized;
+            OrganizarPaneles();
+        }
+        private void OrganizarPaneles()
+        {
+            const int margen = 20;
+            const int espacio = 15;
+            const int alto = 620;
+            var cuatroColumnas = ClientSize.Width >= 1455;
+            var columnas = cuatroColumnas ? 4 : 2;
+            var paneles = new[] { panelUsuarios, panelRoles, panelPermisos, panelAsignados };
+            for (var i = 0; i < paneles.Length; i++)
+            {
+                var ancho = cuatroColumnas
+                    ? (i == 3 ? 380 : 330) + (ClientSize.Width - 1455) / 4
+                    : Math.Max(380, (ClientSize.Width - margen * 2 - espacio) / 2);
+                var izquierda = cuatroColumnas
+                    ? margen + i * (330 + (ClientSize.Width - 1455) / 4 + espacio)
+                    : margen + (i % 2) * (ancho + espacio);
+                paneles[i].Bounds = new System.Drawing.Rectangle(
+                    izquierda,
+                    105 + (i / columnas) * (alto + espacio), ancho, alto);
+            }
+            AutoScrollMinSize = new System.Drawing.Size(0, cuatroColumnas ? 745 : 1380);
         }
         private void RolesYpermisos_Load(object? sender, EventArgs e)
         {
@@ -562,7 +589,7 @@ namespace UI
         private void LimpiarCamposRol()
         {
             textBox1.Clear();
-            label6.Text = "ID:";
+            label6.Text = "ID automático";
             treeViewPermisosPorRol.Nodes.Clear();
             _suppressCheckboxEvents = true;
             LimpiarChecksDeTreeView(treeViewPermisos);
@@ -682,7 +709,7 @@ namespace UI
             }
             else
             {
-                label6.Text = "ID:";
+                label6.Text = "ID automático";
                 textBox1.Text = string.Empty;
             }
             treeViewPermisosPorRol.EndUpdate();
