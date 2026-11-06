@@ -9,7 +9,7 @@ namespace BLL
     public class VehiculoBLL
     {
         private readonly VehiculoMpr _mpr = new VehiculoMpr();
-        private readonly AsignacionVehiucloMpr _asigMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigMpr = new AsignacionVehiculoMpr();
         public const int EstadoMantenimiento = 0;
         public const int EstadoDisponible = 1;
         public const int EstadoAsignado = 2;

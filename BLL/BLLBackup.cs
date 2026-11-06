@@ -33,7 +33,7 @@ namespace BLL
             new PersonalMpr().GetAll();
             new VehiculoMpr().GetAll();
             new AsignacionPersonalMpr().GetAll();
-            new AsignacionVehiucloMpr().GetAll();
+            new AsignacionVehiculoMpr().GetAll();
             new InformeOperativoMpr().GetAll();
             new MantenimientoMpr().GetAll();
             new FacturaMpr().GetAll();

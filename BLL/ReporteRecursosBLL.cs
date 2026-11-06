@@ -9,7 +9,7 @@ namespace BLL
     public class ReporteRecursosBLL
     {
         private readonly AsignacionPersonalMpr _asigPersMpr = new AsignacionPersonalMpr();
-        private readonly AsignacionVehiucloMpr _asigVehMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigVehMpr = new AsignacionVehiculoMpr();
         private readonly PersonalBLL _personalBll = new PersonalBLL();
         private readonly VehiculoBLL _vehiculoBll = new VehiculoBLL();
         private readonly ServicioMpr _servicioMpr = new ServicioMpr();

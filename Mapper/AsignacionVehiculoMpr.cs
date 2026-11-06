@@ -8,11 +8,11 @@ using BE;
 
 namespace Mapper
 {
-    public class AsignacionVehiucloMpr
+    public class AsignacionVehiculoMpr
     {
         private readonly string _path;
 
-        public AsignacionVehiucloMpr()
+        public AsignacionVehiculoMpr()
         {
             var baseDir = AppDomain.CurrentDomain.BaseDirectory ?? Directory.GetCurrentDirectory();
             var dataDir = Path.Combine(baseDir, "Data");

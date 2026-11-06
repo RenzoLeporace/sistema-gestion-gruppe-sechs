@@ -12,6 +12,23 @@ Aplicación de escritorio en C# y Windows Forms para gestionar las operaciones d
 - Consultar informes operativos y reportes de clientes, recursos e ingresos.
 - Administrar usuarios, roles y permisos, consultar la bitácora y realizar copias de respaldo.
 
+## Capturas
+
+<img src="docs/capturas/inicio.png" alt="Panel de gestión de Gruppe Sechs con el menú de clientes, personal, vehículos, servicios, facturación y roles" width="860">
+
+<table>
+  <tr>
+    <td><img src="docs/capturas/personal.png" alt="Gestión de personal con la lista de guardias, especialidades, habilitaciones y licencia de armas"></td>
+    <td><img src="docs/capturas/roles-y-permisos.png" alt="Roles y permisos en cuatro pasos: usuarios, roles, permisos disponibles y accesos del usuario"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Personal</b> · especialidades, habilitaciones y licencias</td>
+    <td align="center"><b>Roles y permisos</b> · acceso por usuario y por rol</td>
+  </tr>
+</table>
+
+Las capturas usan datos de ejemplo cargados en una base aislada.
+
 ## Ejecutar en Windows
 
 Necesitás el SDK de .NET especificado en [`global.json`](global.json). El proyecto usa Windows Forms y almacena los datos localmente en SQLite.
@@ -37,6 +54,7 @@ dotnet run --project UI/UI.csproj
 | [`Mapper/`](Mapper/) | Persistencia SQLite y migración desde XML. |
 | [`Seguridad/`](Seguridad/) | Hash de contraseñas con PBKDF2. |
 | [`tests/IntegrationChecks/`](tests/IntegrationChecks/) | Comprobaciones de contraseñas, clientes, personal, contratos, facturas, pagos y respaldos. |
+| [`docs/`](docs/) | Primera entrega del proyecto en PDF y capturas del README. |
 
 ## Seguridad
 

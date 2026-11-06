@@ -12,7 +12,7 @@ namespace UI
         private readonly ContratoBLL _contratoBll = new ContratoBLL();
         private readonly ServicioBLL _servicioBll = new ServicioBLL();
         private readonly AsignacionPersonalMpr _asigPersMpr = new AsignacionPersonalMpr();
-        private readonly AsignacionVehiucloMpr _asigVehMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigVehMpr = new AsignacionVehiculoMpr();
         private readonly InformeOperativoMpr _informeMpr = new InformeOperativoMpr();
         private readonly FacturaMpr _facturaMpr = new FacturaMpr();
 

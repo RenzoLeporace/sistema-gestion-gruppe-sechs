@@ -8,7 +8,7 @@ namespace BLL
 {
     public class AsignacionVehiculoBLL
     {
-        private readonly AsignacionVehiucloMpr _asigMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigMpr = new AsignacionVehiculoMpr();
         private readonly ServicioBLL _servicioBll = new ServicioBLL();
         private readonly VehiculoBLL _vehiculoBll = new VehiculoBLL();
 

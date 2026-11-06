@@ -11,7 +11,7 @@ namespace BLL
         private readonly ServicioMpr _servicioMpr = new ServicioMpr();
         private readonly ContratoBLL _contratoBll = new ContratoBLL();
         private readonly AsignacionPersonalMpr _asigPersMpr = new AsignacionPersonalMpr();
-        private readonly AsignacionVehiucloMpr _asigVehMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigVehMpr = new AsignacionVehiculoMpr();
         private readonly TipoServicioBLL _tipoServBll = new TipoServicioBLL();
         public List<ServicioBE> Listar() => _servicioMpr.GetAll();
         public ServicioBE CrearServicio(int idContrato, string tipoServicio, DateTime inicio, DateTime fin,

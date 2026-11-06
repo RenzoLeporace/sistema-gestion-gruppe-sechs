@@ -12,7 +12,7 @@ namespace BLL
         private readonly ServicioBLL _servicioBll = new ServicioBLL();
         private readonly ServicioMpr _servicioMpr = new ServicioMpr();
         private readonly AsignacionPersonalMpr _asigPersMpr = new AsignacionPersonalMpr();
-        private readonly AsignacionVehiucloMpr _asigVehMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigVehMpr = new AsignacionVehiculoMpr();
 
         public List<ServicioBE> ListarFinalizadosSinInforme(DateTime? ahora = null)
         {

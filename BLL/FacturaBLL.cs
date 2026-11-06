@@ -24,7 +24,7 @@ namespace BLL
         private readonly ClienteBLL _clienteBll = new ClienteBLL();
         private readonly ServicioBLL _servicioBll = new ServicioBLL();
         private readonly AsignacionPersonalMpr _asigPersMpr = new AsignacionPersonalMpr();
-        private readonly AsignacionVehiucloMpr _asigVehMpr = new AsignacionVehiucloMpr();
+        private readonly AsignacionVehiculoMpr _asigVehMpr = new AsignacionVehiculoMpr();
         private readonly PersonalBLL _personalBll = new PersonalBLL();
         private readonly VehiculoBLL _vehiculoBll = new VehiculoBLL();
 
