@@ -17,6 +17,7 @@ namespace UI
         public GestionPersonal()
         {
             InitializeComponent();
+            ModernTheme.Apply(this);
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = false;
             dataGridView1.ReadOnly = true;

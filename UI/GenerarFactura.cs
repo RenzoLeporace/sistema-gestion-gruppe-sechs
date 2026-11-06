@@ -13,6 +13,7 @@ namespace UI
         public GenerarFactura()
         {
             InitializeComponent();
+            ModernTheme.Apply(this);
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.ReadOnly = true;
             dataGridView1.AutoGenerateColumns = true;

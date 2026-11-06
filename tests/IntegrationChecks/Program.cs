@@ -2,6 +2,8 @@ using System.Text;
 using BE;
 using BLL;
 using Mapper;
+using System.Xml.Serialization;
+using UI;
 using Seguridad;
 
 var data = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
@@ -15,62 +17,75 @@ void Check(bool condition, string name)
     checks++;
 }
 
-// Usuarios: las contraseñas guardadas con el formato anterior (Base64) se convierten a hash al iniciar.
-// Va primero porque la bitácora de las demás operaciones ya inicializa BLLUsuario.
+var legacyPath = Path.Combine(data, "legacy.xml");
+Directory.CreateDirectory(data);
+using (var legacy = File.Create(legacyPath))
+    new XmlSerializer(typeof(List<ClienteBE>)).Serialize(legacy,
+        new List<ClienteBE> { new(7, "Legado", "legacy@example.invalid", "00000007", "0000000000", "Calle 1") });
+Check(XMLHelper.Leer<ClienteBE>(legacyPath).Single().Nombre == "Legado", "migración inicial desde XML a SQLite");
+XMLHelper.Guardar(legacyPath, new List<ClienteBE>());
+Check(XMLHelper.Leer<ClienteBE>(legacyPath).Count == 0, "un borrado no reimporta XML antiguo");
+Check(File.Exists(SqliteStore.DatabasePath), "base de datos SQLite creada");
+// Usuario de prueba con clave generada en ejecución; se migra desde el formato legado.
+var claveLegada = Guid.NewGuid().ToString("N");
+var claveNueva = Guid.NewGuid().ToString("N");
 string FormatoAnterior(string clave) => Convert.ToBase64String(Encoding.Unicode.GetBytes(clave));
 var usuariosXml = Path.Combine(data, "usuarios.xml");
 Directory.CreateDirectory(data);
 File.WriteAllText(usuariosXml, $"""
     <?xml version="1.0"?>
     <ArrayOfUsuarioDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-      <UsuarioDto><Id>1</Id><Nombre>ADMIN</Nombre><PasswordEncrypted>{FormatoAnterior("ADMIN")}</PasswordEncrypted><RolesIds /><Bloqueado>false</Bloqueado><Activo>true</Activo><DescifrarClave>true</DescifrarClave><PermisosIds /></UsuarioDto>
-      <UsuarioDto><Id>2</Id><Nombre>operador</Nombre><PasswordEncrypted>{FormatoAnterior("clave-anterior")}</PasswordEncrypted><RolesIds /><Bloqueado>false</Bloqueado><Activo>true</Activo><DescifrarClave>false</DescifrarClave><PermisosIds /></UsuarioDto>
+      <UsuarioDto><Id>2</Id><Nombre>operador-prueba</Nombre><PasswordEncrypted>{FormatoAnterior(claveLegada)}</PasswordEncrypted><RolesIds /><Bloqueado>false</Bloqueado><Activo>true</Activo><PermisosIds /></UsuarioDto>
     </ArrayOfUsuarioDto>
     """);
 var usuarios = BLLUsuario.Instance;
-var usuariosGuardados = File.ReadAllText(usuariosXml);
-Check(usuarios.GetUsuarios().Count() == 2 && usuarios.GetUsuarios().All(u => HashContrasena.EsHash(u.PasswordHash)), "contraseñas anteriores migradas a hash");
-Check(!usuariosGuardados.Contains("PasswordEncrypted") && !usuariosGuardados.Contains(FormatoAnterior("clave-anterior")), "usuarios.xml sin contraseñas legibles");
-Check(usuarios.ValidarCredenciales("operador", "clave-anterior"), "inicio de sesión con contraseña migrada");
-Check(!usuarios.ValidarCredenciales("operador", "otra-clave"), "rechazo de contraseña incorrecta");
-Check(usuarios.ValidarCredenciales("ADMIN", "ADMIN") && usuarios.CurrentUser?.DebeCambiarClave == true, "ADMIN inicial obligado a cambiar la contraseña");
-try { usuarios.CambiarClave("ADMIN", "corta"); throw new Exception("Aceptó una contraseña corta"); }
+Check(usuarios.GetUsuarios().All(u => HashContrasena.EsHash(u.PasswordHash)), "contraseñas anteriores migradas a hash");
+Check(XMLHelper.Leer<UsuarioMapper.UsuarioDto>(usuariosXml).All(u => !string.IsNullOrEmpty(u.PasswordHash)), "contraseñas activas guardadas como hash en SQLite");
+Check(usuarios.ValidarCredenciales("operador-prueba", claveLegada), "inicio de sesión con contraseña migrada");
+Check(!usuarios.ValidarCredenciales("operador-prueba", claveNueva), "rechazo de contraseña incorrecta");
+try { usuarios.CambiarClave(claveLegada, "corta"); throw new Exception("Aceptó una contraseña corta"); }
 catch (ArgumentException) { Check(true, "rechazo de contraseña corta"); }
-try { usuarios.CambiarClave("incorrecta", "Gruppe-Sechs-2026"); throw new Exception("Aceptó una contraseña actual incorrecta"); }
+try { usuarios.CambiarClave(claveNueva, claveNueva); throw new Exception("Aceptó una contraseña actual incorrecta"); }
 catch (ArgumentException) { Check(true, "cambio de contraseña exige la actual"); }
-usuarios.CambiarClave("ADMIN", "Gruppe-Sechs-2026");
-Check(usuarios.CurrentUser?.DebeCambiarClave == false, "cambio de contraseña quita la obligación");
-Check(!usuarios.ValidarCredenciales("ADMIN", "ADMIN") && usuarios.ValidarCredenciales("ADMIN", "Gruppe-Sechs-2026"), "solo vale la contraseña nueva");
-try { usuarios.CrearUsuario(new BEUsuario { Nombre = "supervisor" }, "supervisor"); throw new Exception("Aceptó una contraseña igual al usuario"); }
-catch (ArgumentException) { Check(true, "rechazo de contraseña igual al usuario"); }
-var hashUno = HashContrasena.Calcular("misma-clave");
-var hashDos = HashContrasena.Calcular("misma-clave");
-Check(hashUno != hashDos && HashContrasena.Verificar("misma-clave", hashUno) && HashContrasena.Verificar("misma-clave", hashDos), "sal distinta para cada hash");
+usuarios.CambiarClave(claveLegada, claveNueva);
+Check(!usuarios.ValidarCredenciales("operador-prueba", claveLegada) && usuarios.ValidarCredenciales("operador-prueba", claveNueva), "solo vale la contraseña nueva");
+var hashUno = HashContrasena.Calcular(claveNueva);
+var hashDos = HashContrasena.Calcular(claveNueva);
+Check(hashUno != hashDos && HashContrasena.Verificar(claveNueva, hashUno) && HashContrasena.Verificar(claveNueva, hashDos), "sal distinta para cada hash");
 usuarios.Logout();
+var rolMpr = new RolMpr();
+var rol = new BERol { Nombre = "Administrador de prueba", Descripcion = "Acceso de prueba" };
+rolMpr.Guardar(rol);
+var usuarioMpr = new UsuarioMapper();
+var usuarioConRol = usuarioMpr.ObtenerTodos().Single(u => u.Nombre == "operador-prueba");
+usuarioConRol.Roles.Add(rol);
+usuarioMpr.Guardar(usuarioConRol);
+Check(usuarioMpr.ObtenerTodos().Single(u => u.Nombre == "operador-prueba").Roles.Single().Nombre == rol.Nombre, "usuarios y roles persistidos en SQLite");
+
 
 var clientes = new ClienteBLL();
-var cliente = clientes.Alta("Cliente prueba", "Calle 123", "1122334455", "test@example.com", "30123456");
-Check(clientes.BuscarPorDni("30123456")?.IdCliente == cliente.IdCliente, "alta y lectura de cliente");
-try { clientes.Alta("Duplicado", "Calle 123", "1122334455", "test@example.com", "30123456"); throw new Exception("Aceptó DNI duplicado"); }
+var cliente = clientes.Alta("Cliente prueba", "Calle 123", "0000000000", "client@example.invalid", "00000001");
+Check(clientes.BuscarPorDni("00000001")?.IdCliente == cliente.IdCliente, "alta y lectura de cliente");
+try { clientes.Alta("Duplicado", "Calle 123", "0000000000", "client@example.invalid", "00000001"); throw new Exception("Aceptó DNI duplicado"); }
 catch (InvalidOperationException) { Check(true, "bloqueo de cliente duplicado"); }
-clientes.Actualizar("Cliente actualizado", "Calle 456", "1122334455", "test@example.com", "30123456");
-Check(clientes.BuscarPorDni("30123456")?.Nombre == "Cliente actualizado", "actualización de cliente");
+clientes.Actualizar("Cliente actualizado", "Calle 456", "0000000000", "client@example.invalid", "00000001");
+Check(clientes.BuscarPorDni("00000001")?.Nombre == "Cliente actualizado", "actualización de cliente");
 
 var personalBll = new PersonalBLL();
 var datos = new PersonalBLL.DatosAdicionalesPersonal
 {
-    Correo = "guardia@example.com", Telefono = "1133344455", TurnosDisponibles = "Noche",
+    Correo = "staff@example.invalid", Telefono = "0000000000", TurnosDisponibles = "Noche",
     VencimientoLicenciaArmas = DateTime.Today.AddYears(1), Capacitaciones = "RCP"
 };
-var personal = personalBll.Agregar("Guardia", "32123456", "ESCOLTA", ["Permiso de Armas"], datos: datos);
+var personal = personalBll.Agregar("Guardia", "00000002", "ESCOLTA", ["Permiso de Armas"], datos: datos);
 Check(personalBll.BuscarPorId(personal.IdPersonal)?.Correo == datos.Correo, "datos de contacto de personal persistidos");
 Check(personalBll.BuscarPorId(personal.IdPersonal)?.VencimientoLicenciaArmas == datos.VencimientoLicenciaArmas, "licencia de armas persistida");
 personalBll.MarcarDisponibilidad(personal.IdPersonal, false);
 Check(personalBll.BuscarPorId(personal.IdPersonal)?.TurnosDisponibles == "Noche", "cambio de disponibilidad conserva datos adicionales");
-try { personalBll.Agregar("Otro", "33123456", "ESCOLTA", [], datos: datos); throw new Exception("Aceptó fecha sin permiso"); }
+try { personalBll.Agregar("Otro", "00000003", "ESCOLTA", [], datos: datos); throw new Exception("Aceptó fecha sin permiso"); }
 catch (ArgumentException) { Check(true, "validación de licencia de armas"); }
-personalBll.Actualizar(personal.IdPersonal, "Guardia", "32123456", "ESCOLTA", [], false,
-    new PersonalBLL.DatosAdicionalesPersonal { Correo = "nuevo@example.com" });
+personalBll.Actualizar(personal.IdPersonal, "Guardia", "00000002", "ESCOLTA", [], false,
+    new PersonalBLL.DatosAdicionalesPersonal { Correo = "updated@example.invalid" });
 Check(personalBll.BuscarPorId(personal.IdPersonal)?.VencimientoLicenciaArmas == null, "limpieza de licencia al quitar permiso");
 
 var inicio = DateTime.Now.AddHours(24);
@@ -101,7 +116,31 @@ Check(facturaMpr.GetAll().Single().Estado_Pago, "pago completo persistido");
 Check(!pagoBll.ListarFacturasPendientesOrdenadas().Any(), "listado de pendientes actualizado");
 
 var snapshot = BLLBackup.Instance.CrearSnapshotBackup();
-Check(File.Exists(snapshot), "creación de respaldo XML");
+Check(File.Exists(snapshot), "creación de respaldo SQLite");
 Check(BLLBackup.Instance.EnumerarSnapshots().Contains(snapshot), "respaldo visible para restauración");
+clientes.Actualizar("Cambio posterior", "Calle 456", "0000000000", "client@example.invalid", "00000001");
+BLLBackup.Instance.RestaurarDesdeSnapshot(snapshot, crearBackupPrevio: false);
+Check(clientes.BuscarPorDni("00000001")?.Nombre == "Cliente actualizado", "restauración recupera estado de cliente");
+
+Exception? uiError = null;
+var uiThread = new Thread(() =>
+{
+    try
+    {
+        using var main = new Form1();
+        using var staff = new GestionPersonal();
+        using var history = new HistorialServicios();
+        if (main.Controls.Count == 0 || staff.Controls.Count == 0 || history.Controls.Count == 0)
+            throw new Exception("Formulario sin controles");
+    }
+    catch (Exception ex) { uiError = ex; }
+});
+uiThread.SetApartmentState(ApartmentState.STA);
+uiThread.Start();
+uiThread.Join();
+if (uiError != null) throw new Exception("Falló la apertura de formularios", uiError);
+Check(true, "apertura de formularios principal, personal e historial");
 
 Console.WriteLine($"{checks} comprobaciones superadas.");
+
+

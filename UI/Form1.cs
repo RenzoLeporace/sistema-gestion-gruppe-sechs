@@ -11,14 +11,16 @@ namespace UI
         public Form1()
         {
             InitializeComponent();
-            if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
-                Resize += (_, _) => PosicionarBotones();
-        }
-        private void PosicionarBotones()
-        {
-            int top = menuStrip1.Bottom + (int)((ClientSize.Height - menuStrip1.Bottom) * 0.51);
-            button1.Location = new Point((int)(ClientSize.Width * 0.39), top);
-            button2.Location = new Point((int)(ClientSize.Width * 0.593), top);
+            menuStrip1.RenderMode = ToolStripRenderMode.Professional;
+            menuStrip1.BackColor = Color.FromArgb(16, 29, 48);
+            menuStrip1.ForeColor = Color.White;
+            foreach (ToolStripMenuItem item in menuStrip1.Items)
+            {
+                item.ForeColor = Color.White;
+                item.DropDown.BackColor = Color.FromArgb(28, 43, 64);
+                foreach (ToolStripItem child in item.DropDownItems)
+                    child.ForeColor = Color.White;
+            }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -53,6 +55,11 @@ namespace UI
             restorteToolStripMenuItem.Visible = Autorizador.UsuarioActualTienePermiso("RESTORE");
             rolesYPermisosToolStripMenuItem.Visible = Autorizador.UsuarioActualTienePermiso("ROLES_Y_PERMISOS");
             dashBoardToolStripMenuItem1.Visible = Autorizador.UsuarioActualTienePermiso("DASHBOARD");
+            quickClientButton.Visible = informaciónDeClienteToolStripMenuItem.Visible;
+            quickServiceButton.Visible = crearServicioToolStripMenuItem.Visible;
+            quickPersonalButton.Visible = gestionDePersonalToolStripMenuItem.Visible;
+            quickBillingButton.Visible = generarFacturaToolStripMenuItem.Visible;
+            subtitleLabel.Text = current == null ? "Elegí una tarea para comenzar" : $"Sesión: {current.Nombre}  ·  Elegí una tarea";
         }
         private void informaciónDeClienteToolStripMenuItem_Click(object sender, EventArgs e)
         {

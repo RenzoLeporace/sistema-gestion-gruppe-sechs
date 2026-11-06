@@ -40,11 +40,12 @@
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(358, 12);
+            dataGridView1.Location = new Point(20, 142);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(430, 188);
+            dataGridView1.Size = new Size(1110, 410);
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.TabIndex = 14;
             // 
             // label1
@@ -58,9 +59,9 @@
             // 
             // btnConsHisServicios
             // 
-            btnConsHisServicios.Location = new Point(70, 114);
+            btnConsHisServicios.Location = new Point(363, 31);
             btnConsHisServicios.Name = "btnConsHisServicios";
-            btnConsHisServicios.Size = new Size(171, 65);
+            btnConsHisServicios.Size = new Size(171, 43);
             btnConsHisServicios.TabIndex = 12;
             btnConsHisServicios.Text = "Consultar Historial";
             btnConsHisServicios.UseVisualStyleBackColor = true;
@@ -77,7 +78,8 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 224);
+            ClientSize = new Size(1150, 575);
+            MinimumSize = new Size(800, 420);
             Controls.Add(dataGridView1);
             Controls.Add(label1);
             Controls.Add(btnConsHisServicios);

@@ -4,10 +4,12 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../BE/BE.csproj" />
     <ProjectReference Include="../../BLL/BLL.csproj" />
     <ProjectReference Include="../../Mapper/Mapper.csproj" />
+    <ProjectReference Include="../../UI/UI.csproj" />
   </ItemGroup>
 </Project>

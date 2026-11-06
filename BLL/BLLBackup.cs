@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Xml.Linq;
 using BE;
+using Mapper;
 
 namespace BLL
 {
@@ -20,155 +20,108 @@ namespace BLL
             get
             {
                 var dir = Path.Combine(DataDirectory, "BACKUP");
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
+                Directory.CreateDirectory(dir);
                 return dir;
             }
         }
+
+        private static void MigrarColeccionesLegadas()
+        {
+            new ClienteMpr().GetAll();
+            new ContratoMpr().GetAll();
+            new ServicioMpr().GetAll();
+            new PersonalMpr().GetAll();
+            new VehiculoMpr().GetAll();
+            new AsignacionPersonalMpr().GetAll();
+            new AsignacionVehiucloMpr().GetAll();
+            new InformeOperativoMpr().GetAll();
+            new MantenimientoMpr().GetAll();
+            new FacturaMpr().GetAll();
+            new PagoMpr().GetAll();
+            new TipoServicioMpr().GetAll();
+            new MprPermiso().ObtenerTodos();
+            new RolMpr().ObtenerTodos();
+            new UsuarioMapper().ObtenerTodos();
+            new BitacoraMapper().ObtenerTodos();
+        }
+
         public IEnumerable<string> EnumerarArchivosDatos()
         {
-            var baseDir = DataDirectory;
-            if (!Directory.Exists(baseDir)) return Enumerable.Empty<string>();
+            MigrarColeccionesLegadas();
+            return File.Exists(SqliteStore.DatabasePath) ? new[] { SqliteStore.DatabasePath } : Enumerable.Empty<string>();
+        }
 
-            var rootXml = Directory.EnumerateFiles(baseDir, "*.xml", SearchOption.TopDirectoryOnly);
-            var dataDir = Path.Combine(baseDir, "Data");
-            var dataXml = Directory.Exists(dataDir)
-                ? Directory.EnumerateFiles(dataDir, "*.xml", SearchOption.AllDirectories)
-                : Enumerable.Empty<string>();
-            var all = rootXml.Concat(dataXml);
-            return all.Where(f =>
-            {
-                var name = Path.GetFileName(f);
-                return !name.StartsWith("BD_Backup_", StringComparison.OrdinalIgnoreCase);
-            });
-        }
-        public IEnumerable<string> EnumerarSnapshots()
-        {
-            var dir = BackupDirectory;
-            return Directory.EnumerateFiles(dir, "BD_Backup_*.xml", SearchOption.TopDirectoryOnly)
-                            .OrderByDescending(f => f);
-        }
+        public IEnumerable<string> EnumerarSnapshots() =>
+            Directory.EnumerateFiles(BackupDirectory, "BD_Backup_*.sqlite3", SearchOption.TopDirectoryOnly)
+                .OrderByDescending(f => f);
+
         public string CrearSnapshotBackup()
         {
-            var files = EnumerarArchivosDatos().ToList();
-            if (!files.Any())
-                throw new InvalidOperationException("No se encontraron archivos de datos (.xml) para respaldar.");
-            var fileName = $"BD_Backup_{DateTime.Now:dd-MM-yyyy HH-mm-ss}.xml";
-            fileName = fileName.Replace(':', '-');
-            var destino = Path.Combine(BackupDirectory, fileName);
-
+            MigrarColeccionesLegadas();
+            var destino = Path.Combine(BackupDirectory, $"BD_Backup_{DateTime.Now:yyyyMMdd-HHmmss}.sqlite3");
             try
             {
-                var root = new XElement("BackupSnapshot",
-                    new XAttribute("Fecha", DateTime.Now.ToString("O")),
-                    new XAttribute("Origen", DataDirectory));
-
-                foreach (var file in files)
-                {
-                    var bytes = File.ReadAllBytes(file);
-                    var contentB64 = Convert.ToBase64String(bytes);
-                    var relPath = Path.GetRelativePath(DataDirectory, file);
-                    root.Add(new XElement("File",
-                        new XAttribute("Name", Path.GetFileName(file)),
-                        new XAttribute("Path", relPath),
-                        contentB64));
-                }
-                var doc = new XDocument(root);
-                doc.Save(destino);
-
+                SqliteStore.CrearCopia(destino);
                 BLLBitacora.Instance.Registrar(BitacoraTipo.Backup,
-                    $"Snapshot creado: {Path.GetFileName(destino)}",
-                    "backup", true);
-
+                    $"Snapshot creado: {Path.GetFileName(destino)}", "backup", true);
                 return destino;
             }
             catch (Exception ex)
             {
-                BLLBitacora.Instance.Registrar(BitacoraTipo.Backup,
-                    "Fallo al crear snapshot", ex.Message, false);
+                BLLBitacora.Instance.Registrar(BitacoraTipo.Backup, "Fallo al crear snapshot", ex.Message, false);
                 throw;
             }
         }
+
         public void RestaurarDesdeSnapshot(string snapshotPath, bool crearBackupPrevio = true)
         {
             if (string.IsNullOrWhiteSpace(snapshotPath) || !File.Exists(snapshotPath))
-                throw new FileNotFoundException("No se encontrÛ el archivo de snapshot.", snapshotPath);
+                throw new FileNotFoundException("No se encontr√≥ el respaldo.", snapshotPath);
             try
             {
                 if (crearBackupPrevio)
                 {
-                    var safetyZip = Path.Combine(BackupDirectory, $"pre-restore-{DateTime.Now:yyyyMMdd-HHmmss}.zip");
-                    CrearBackup(safetyZip);
+                    var safety = Path.Combine(BackupDirectory, $"pre-restore-{DateTime.Now:yyyyMMdd-HHmmss}.sqlite3");
+                    SqliteStore.CrearCopia(safety);
+
                 }
-                var doc = XDocument.Load(snapshotPath);
-                var root = doc.Root;
-                if (root == null || root.Name != "BackupSnapshot")
-                    throw new InvalidOperationException("Formato de snapshot inv·lido.");
-                var files = root.Elements("File").ToList();
-                if (!files.Any())
-                    throw new InvalidOperationException("El snapshot no contiene datos.");
-                foreach (var f in files)
-                {
-                    var pathAttr = f.Attribute("Path");
-                    var nameAttr = f.Attribute("Name");
-                    string? relativePath = pathAttr?.Value;
-                    if (string.IsNullOrWhiteSpace(relativePath))
-                        relativePath = nameAttr?.Value ?? throw new InvalidOperationException("Entrada de archivo inv·lida.");
-                    var destFile = Path.Combine(DataDirectory, relativePath);
-                    var destDir = Path.GetDirectoryName(destFile);
-                    if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
-                        Directory.CreateDirectory(destDir);
-                    var b64 = f.Value.Trim();
-                    var bytes = Convert.FromBase64String(b64);
-                    File.WriteAllBytes(destFile, bytes);
-                }
+                SqliteStore.RestaurarCopia(snapshotPath);
                 BLLBitacora.Instance.Registrar(BitacoraTipo.Restore,
-                    $"RestauraciÛn desde snapshot: {Path.GetFileName(snapshotPath)}",
-                    "restore", true);
+                    $"Restauraci√≥n desde snapshot: {Path.GetFileName(snapshotPath)}", "restore", true);
                 DatosRestaurados?.Invoke();
             }
             catch (Exception ex)
             {
-                BLLBitacora.Instance.Registrar(BitacoraTipo.Restore,
-                    "Fallo al restaurar snapshot", ex.Message, false);
+                BLLBitacora.Instance.Registrar(BitacoraTipo.Restore, "Fallo al restaurar snapshot", ex.Message, false);
                 throw;
             }
         }
+
         public string CrearBackup(string destinoZip)
         {
             if (string.IsNullOrWhiteSpace(destinoZip))
-                throw new ArgumentException("Ruta de destino inv·lida.", nameof(destinoZip));
-
-            var files = EnumerarArchivosDatos().ToList();
-            if (!files.Any())
-                throw new InvalidOperationException("No se encontraron archivos de datos (.xml) para respaldar.");
+                throw new ArgumentException("Ruta de destino inv√°lida.", nameof(destinoZip));
+            MigrarColeccionesLegadas();
+            var temp = Path.Combine(Path.GetTempPath(), $"gruppe-sechs-{Guid.NewGuid():N}.sqlite3");
             try
             {
-                var dir = Path.GetDirectoryName(destinoZip);
-                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
+                SqliteStore.CrearCopia(temp);
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destinoZip))!);
                 using var fs = new FileStream(destinoZip, FileMode.Create, FileAccess.Write, FileShare.None);
                 using var zip = new ZipArchive(fs, ZipArchiveMode.Create);
-                foreach (var file in files)
-                {
-                    var relPath = Path.GetRelativePath(DataDirectory, file);
-                    relPath = relPath.Replace('\\', '/');
-                    zip.CreateEntryFromFile(file, relPath, CompressionLevel.Optimal);
-                }
-                var entry = zip.CreateEntry("backup_info.txt");
-                using var writer = new StreamWriter(entry.Open());
-                writer.WriteLine($"Fecha: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-                writer.WriteLine($"Origen: {DataDirectory}");
-                writer.WriteLine($"Archivos: {files.Count}");
+                zip.CreateEntryFromFile(temp, "Data/gruppe_sechs.sqlite3", CompressionLevel.Optimal);
                 BLLBitacora.Instance.Registrar(BitacoraTipo.Backup,
                     $"Backup ZIP creado: {Path.GetFileName(destinoZip)}", "backup", true);
                 return destinoZip;
             }
             catch (Exception ex)
             {
-                BLLBitacora.Instance.Registrar(BitacoraTipo.Backup,
-                    "Fallo al crear backup ZIP", ex.Message, false);
+                BLLBitacora.Instance.Registrar(BitacoraTipo.Backup, "Fallo al crear backup ZIP", ex.Message, false);
                 throw;
+            }
+            finally
+            {
+                if (File.Exists(temp)) File.Delete(temp);
             }
         }
     }

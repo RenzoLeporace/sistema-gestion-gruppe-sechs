@@ -19,6 +19,7 @@ namespace UI
         public HistorialServicios()
         {
             InitializeComponent();
+            ModernTheme.Apply(this);
             dataGridView1.AutoGenerateColumns = true;
             dataGridView1.ReadOnly = true;
             dataGridView1.MultiSelect = false;

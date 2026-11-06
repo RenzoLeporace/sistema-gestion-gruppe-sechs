@@ -21,6 +21,7 @@ namespace UI
         public CrearServicio()
         {
             InitializeComponent();
+            ModernTheme.Apply(this);
             txtPersonal.Text = "1";
             txtVehiculos.Text = "0";
         }

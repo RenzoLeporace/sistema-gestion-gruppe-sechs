@@ -63,14 +63,22 @@ namespace UI
             pictureBox1 = new PictureBox();
             button1 = new Button();
             button2 = new Button();
+            dashboardPanel = new Panel();
+            titleLabel = new Label();
+            subtitleLabel = new Label();
+            quickClientButton = new Button();
+            quickServiceButton = new Button();
+            quickPersonalButton = new Button();
+            quickBillingButton = new Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            dashboardPanel.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.BackColor = Color.FromArgb(226, 232, 240);
-            menuStrip1.ForeColor = Color.FromArgb(15, 23, 42);
+            menuStrip1.BackColor = Color.FromArgb(16, 29, 48);
+            menuStrip1.ForeColor = Color.White;
             menuStrip1.ImageScalingSize = new Size(20, 20);
             menuStrip1.Items.AddRange(new ToolStripItem[] { gestiónDeClientesYContratosToolStripMenuItem, gestiToolStripMenuItem, vehiculosBlindadosToolStripMenuItem, serviciosDeSeguridadToolStripMenuItem, facturacionYReportesToolStripMenuItem, dashboardToolStripMenuItem, rolesYPermisosToolStripMenuItem, gestiònBaseDeDatosToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
@@ -304,21 +312,20 @@ namespace UI
             pictureBox1.Location = new Point(0, 28);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(1240, 365);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
             // 
             // button1
             // 
             button1.BackColor = Color.FromArgb(12, 29, 44);
-            button1.FlatAppearance.BorderColor = Color.White;
-            button1.FlatAppearance.BorderSize = 2;
+            button1.FlatAppearance.BorderSize = 0;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             button1.ForeColor = Color.White;
-            button1.Location = new Point(469, 206);
+            button1.Location = new Point(28, 307);
             button1.Name = "button1";
-            button1.Size = new Size(243, 59);
+            button1.Size = new Size(192, 42);
             button1.TabIndex = 2;
             button1.Text = "Cerrar sesión";
             button1.UseVisualStyleBackColor = false;
@@ -327,18 +334,71 @@ namespace UI
             // button2
             // 
             button2.BackColor = Color.FromArgb(12, 29, 44);
-            button2.FlatAppearance.BorderColor = Color.White;
-            button2.FlatAppearance.BorderSize = 2;
+            button2.FlatAppearance.BorderSize = 0;
             button2.FlatStyle = FlatStyle.Flat;
             button2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             button2.ForeColor = Color.White;
-            button2.Location = new Point(718, 206);
+            button2.Location = new Point(232, 307);
             button2.Name = "button2";
-            button2.Size = new Size(245, 59);
+            button2.Size = new Size(192, 42);
             button2.TabIndex = 3;
             button2.Text = "Salir";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
+            //
+            // dashboardPanel
+            //
+            dashboardPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dashboardPanel.BackColor = Color.FromArgb(16, 29, 48);
+            dashboardPanel.Location = new Point(0, 28);
+            dashboardPanel.Name = "dashboardPanel";
+            dashboardPanel.Size = new Size(452, 365);
+            dashboardPanel.Controls.Add(titleLabel);
+            dashboardPanel.Controls.Add(subtitleLabel);
+            dashboardPanel.Controls.Add(quickClientButton);
+            dashboardPanel.Controls.Add(quickServiceButton);
+            dashboardPanel.Controls.Add(quickPersonalButton);
+            dashboardPanel.Controls.Add(quickBillingButton);
+            dashboardPanel.Controls.Add(button1);
+            dashboardPanel.Controls.Add(button2);
+            titleLabel.AutoSize = true;
+            titleLabel.Font = new Font("Segoe UI Semibold", 23F, FontStyle.Bold);
+            titleLabel.ForeColor = Color.White;
+            titleLabel.Location = new Point(28, 30);
+            titleLabel.Text = "Panel de gestión";
+            subtitleLabel.AutoSize = true;
+            subtitleLabel.Font = new Font("Segoe UI", 10F);
+            subtitleLabel.ForeColor = Color.FromArgb(160, 184, 210);
+            subtitleLabel.Location = new Point(30, 89);
+            subtitleLabel.Text = "Elegí una tarea para comenzar";
+            quickClientButton.Location = new Point(28, 140);
+            quickClientButton.Text = "Clientes y contratos  →";
+            quickClientButton.Click += informaciónDeClienteToolStripMenuItem_Click;
+            quickServiceButton.Location = new Point(232, 140);
+            quickServiceButton.Text = "Nuevo servicio  →";
+            quickServiceButton.Click += crearServicioToolStripMenuItem_Click;
+            quickPersonalButton.Location = new Point(28, 196);
+            quickPersonalButton.Text = "Personal  →";
+            quickPersonalButton.Click += gestionDePersonalToolStripMenuItem_Click;
+            quickBillingButton.Location = new Point(232, 196);
+            quickBillingButton.Text = "Facturación  →";
+            quickBillingButton.Click += generarFacturaToolStripMenuItem_Click;
+            foreach (var action in new[] { quickClientButton, quickServiceButton, quickPersonalButton, quickBillingButton })
+            {
+                action.Size = new Size(192, 44);
+                action.FlatStyle = FlatStyle.Flat;
+                action.FlatAppearance.BorderSize = 0;
+                action.BackColor = Color.FromArgb(35, 58, 83);
+                action.ForeColor = Color.White;
+                action.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                action.Cursor = Cursors.Hand;
+            }
+            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            button1.Cursor = Cursors.Hand;
+            button2.Cursor = Cursors.Hand;
+            button1.BackColor = Color.FromArgb(40, 67, 98);
+            button2.BackColor = Color.FromArgb(32, 62, 155);
             // 
             // Form1
             // 
@@ -346,8 +406,7 @@ namespace UI
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 23, 42);
             ClientSize = new Size(1240, 393);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(dashboardPanel);
             Controls.Add(pictureBox1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -358,6 +417,8 @@ namespace UI
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            dashboardPanel.ResumeLayout(false);
+            dashboardPanel.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -395,6 +456,13 @@ namespace UI
         private PictureBox pictureBox1;
         private Button button1;
         private Button button2;
+        private Panel dashboardPanel;
+        private Label titleLabel;
+        private Label subtitleLabel;
+        private Button quickClientButton;
+        private Button quickServiceButton;
+        private Button quickPersonalButton;
+        private Button quickBillingButton;
         private ToolStripMenuItem dashBoardToolStripMenuItem1;
         private ToolStripMenuItem reporteClientesToolStripMenuItem1;
         private ToolStripMenuItem reporteEconomicoToolStripMenuItem;

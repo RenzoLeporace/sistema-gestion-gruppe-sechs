@@ -14,6 +14,7 @@ namespace UI
         public GestionarInfoCliente()
         {
             InitializeComponent();
+            ModernTheme.Apply(this);
             _clienteBll = new ClienteBLL();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = false;
